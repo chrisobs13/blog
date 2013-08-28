@@ -69,7 +69,6 @@ github_show_profile_link: true
 github_skip_forks: true
 
 # Twitter
-<<<<<<< HEAD
 twitter_user: semanticart
 twitter_tweet_button: true
 

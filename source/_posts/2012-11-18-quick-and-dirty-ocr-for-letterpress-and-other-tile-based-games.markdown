@@ -78,6 +78,8 @@ Bingo! A perfect match, ready to be compared to a dictionary of valid words.
 
 It turns out tesseract is great at matching single tiles regardless of color scheme or captured state of the tile. The tests for the code run against screenshots from all available color schemes.
 
+This approach is dead-simple and leans heavily on solid existing technologies. Because of this, the glue code itself doesn't have to be clever at all :)
+
 Note that this quick hack is just designed to work against iPhone 4 resolution screenshots -you would have to (at least) change the header crop size for iPhone 5.
 
 <hr />
