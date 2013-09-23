@@ -8,9 +8,9 @@ categories: go apis rails
 
 ### The problem:
 
-This weekend I threw away all my normal tools to try something new. I started writing a simple app in angular.js (which is great, btw) and ended up bumping into a problem I've encountered many times before:
+Have you ever written a javascript app that needed to consume an API? What if the API requires you to pass your api key along in the query params? How do you hide your key?
 
-**I wanted to make AJAX calls to consume an API that required me to pass my api key in the query params.**
+This weekend I bumped into this issue once again. I was writing a simple app in angular to consume the last.fm api when it hit me.
 
 This usually leaves me with two options:
 
@@ -25,9 +25,9 @@ Imagine your rails app is built around an external API. Do you really want to sp
 
 ### The solution: Move things out-of-band
 
-Your app server shouldn't pay the penalties of keeping your key secure and it shouldn't be slowed down by requests that could otherwise hit the api directly.
+For requests that could otherwise hit the api directly, your app server shouldn't pay the penalties of keeping your key secure. So let's move things out-of-band.
 
-I'd been meaning to play with [Go][golang] for some time but never had the right project. The solution here was fairly simple but needed to be highly concurrent, so this felt like a good fit.
+I'd been meaning to play with [Go][golang] for some time but never had the right project. The implementation here was fairly simple but needed to be highly concurrent, so this felt like a good fit.
 
 Borrowing from example Go http servers and http consumers, I came up with this:
 
@@ -41,44 +41,43 @@ import (
 	"os"
 )
 
+func errorOut(err error) {
+	fmt.Printf("%s", err)
+	os.Exit(1)
+}
+
 func handler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	w.Header().Set("Access-Control-Allow-Headers", "X-Requested-With")
 
 	if r.Method == "GET" {
-		var newUrl string = os.Getenv("URL_ROOT") + r.URL.Path[1:] + "?" + r.URL.RawQuery +
-			os.Getenv("URL_SUFFIX")
+		var newUrl string = os.Getenv("URL_ROOT") + r.URL.Path[1:] + "?" +
+        r.URL.RawQuery + os.Getenv("URL_SUFFIX")
+
 		fmt.Printf("fetching %s\n", newUrl)
 
 		response, err := http.Get(newUrl)
 		if err != nil {
-			fmt.Printf("%s", err)
-			os.Exit(1)
+			errorOut(err)
 		} else {
 			defer response.Body.Close()
 			contents, err := ioutil.ReadAll(response.Body)
 			if err != nil {
-				fmt.Printf("%s", err)
-				os.Exit(1)
+				errorOut(err)
 			}
 			fmt.Fprintf(w, "%s\n", contents)
 		}
 	}
 }
-
-func main() {
-	http.HandleFunc("/", handler)
-	http.ListenAndServe(":"+os.Getenv("PORT"), nil)
-}
 ```
 
-The server takes incoming requests and will translate the url by substituting the provided URL_ROOT and appending the URL_SUFFIX (the api key).
+The server takes incoming requests and will translate the url by substituting the provided URL_ROOT and appending the URL_SUFFIX (the api key). It fetches that foreign url and then returns the results.
 
 So with the example config:
 
     URL_ROOT=http://ws.audioscrobbler.com/2.0/ URL_SUFFIX=&api_key=XXXXXXXXXXXXX
 
-A request to http://example.com/?method=user.getrecenttracks&user=violencenow&format=json would return the contents of http://ws.audioscrobbler.com/2.0/?method=user.getrecenttracks&user=violencenow&format=json&api_key=XXXXXXXXXXXXX
+A request to the go server at http://example.com/?method=user.getrecenttracks&user=violencenow&format=json would return the contents of http://ws.audioscrobbler.com/2.0/?method=user.getrecenttracks&user=violencenow&format=json&api_key=XXXXXXXXXXXXX
 
 This isn't a solution for everything. Right now it only supports GET requests - this is probably all you'd ever want, lest someone start posting to your endpoint and doing things you don't expect. These sorts of potentially destructive behaviors are perhaps better handled in-band where you can apply some sanity checks.
 
@@ -131,7 +130,7 @@ And we'll use the same benchmark command: `ab -c 300 -n 600 "http://some-fake-se
     Waiting:     1049 1405 325.1   1331    3012
     Total:       1085 1730 609.4   1644    3875
 
-Secientific or not, that's performance I can live with. And hopefully those API endpoints aren't quite taking a full second per request.
+Scientific or not, that's performance I can live with. And hopefully those API endpoints aren't quite taking a full second per request.
 
 [golang]: http://golang.org/
 [gh]: https://github.com/semanticart/api_proxy.go
