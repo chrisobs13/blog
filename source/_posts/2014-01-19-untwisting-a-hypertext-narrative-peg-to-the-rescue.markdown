@@ -254,7 +254,7 @@ If you made it this far, you deserve a cookie and my undying affection. I'm all 
 
 Here's the [cyoa-parser on github][cyoa-github]. It includes a [hilariously bad speed-story][smell-ya-later] I wrote for my son when he insisted on a CYOA bedtime story 10 minutes before bed.
 
-If you'd like to learn more about Parslet from someone who knows it better than me, check out [Jason Garber's Wicked Good Ruby talk][garber]
+If you'd like to learn more about Parslet from someone who knows it better than me, check out [Jason Garber's Wicked Good Ruby talk][garber].
 
 [previous-post]: http://blog.semanticart.com/blog/2014/01/11/writing-hypertext-fiction-in-markdown/
 [so]: http://stackoverflow.com/a/1732454
