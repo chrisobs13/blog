@@ -6,6 +6,8 @@ comments: true
 categories: go apis rails
 ---
 
+# UPATE: see ["A proper API proxy written in Go"][newpost] for a better solution to this problem.
+
 ### The problem:
 
 Have you ever written a javascript app that needed to consume an API? What if the API requires you to pass your api key along in the query params? How do you hide your key?
@@ -81,7 +83,7 @@ A request to the go server at http://example.com/?method=user.getrecenttracks&us
 
 This isn't a solution for everything. Right now it only supports GET requests - this is probably all you'd ever want, lest someone start posting to your endpoint and doing things you don't expect. These sorts of potentially destructive behaviors are perhaps better handled in-band where you can apply some sanity checks.
 
-But if all you need to do is get content from an API without exposing your keys to the public, this might be a good solution for you. The code is available on [github][gh] and it runs quite well with the [heroku go buildpack][hb].
+But if all you need to do is get content from an API without exposing your keys to the public, this might be a good solution for you.
 
 ### Some numbers
 This is very unscientific, but I setup a [Go server][sleepy] on heroku http://sleepy-server.herokuapp.com/ that takes a request, waits 1 second, and then returns plain text.
@@ -133,6 +135,6 @@ And we'll use the same benchmark command: `ab -c 300 -n 600 "http://some-fake-se
 Scientific or not, that's performance I can live with. And hopefully those API endpoints aren't quite taking a full second per request.
 
 [golang]: http://golang.org/
-[gh]: https://github.com/semanticart/api_proxy.go
 [hb]: https://github.com/kr/heroku-buildpack-go
 [sleepy]: https://gist.github.com/semanticart/b0285765737997e8593://gist.github.com/semanticart/b0285765737997e8593e
+[newpost]: http://blog.semanticart.com/blog/2013/11/11/a-proper-api-proxy-written-in-go/
