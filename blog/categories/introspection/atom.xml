@@ -4,7 +4,7 @@
   <title><![CDATA[Category: introspection | semantic art]]></title>
   <link href="http://blog.semanticart.com/blog/blog/categories/introspection/atom.xml" rel="self"/>
   <link href="http://blog.semanticart.com/blog/"/>
-  <updated>2014-12-31T17:50:47-06:00</updated>
+  <updated>2014-12-31T17:51:07-06:00</updated>
   <id>http://blog.semanticart.com/blog/</id>
   <author>
     <name><![CDATA[Jeffrey Chupp]]></name>
@@ -35,11 +35,11 @@
 
 <p>Thanks to <a href="http://www.last.fm/user/violencenow">last.fm</a>, I can see that roughly half my top 15 artists in 2014 were artists I discovered this year.</p>
 
-<p>{% img right /images/top-artists-2014.png &lsquo;2014 Top Artists&rsquo; %}</p>
+<p><img class="right" src="/images/top-artists-2014.png" title="&lsquo;2014 Top Artists&rsquo;" ></p>
 
 <p>The chart for the last 3 months is also interesting.</p>
 
-<p>{% img right /images/top-artists-2014-last-three.png &lsquo;2014 Top Artists of Last Three Months&rsquo; %}</p>
+<p><img class="right" src="/images/top-artists-2014-last-three.png" title="&lsquo;2014 Top Artists of Last Three Months&rsquo;" ></p>
 
 <p>Themes for the year include punk, newer emo bands, and Norwegian dream pop&hellip; I didn&rsquo;t see that last one coming, but <a href="http://www.last.fm/music/Bendik">Bendik</a> and <a href="http://www.last.fm/music/Frode+Johannessen">Frode Johannessen</a> hit me perfectly in the past few months. Amazingly, Frode is essentially ungoogleable and only has 463 last.fm listeners at the time I write this. <a href="https://www.youtube.com/watch?v=Nb_-QK9wPas">Det gjør någe me meg</a> is worth a listen.</p>
 

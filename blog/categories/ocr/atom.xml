@@ -4,7 +4,7 @@
   <title><![CDATA[Category: ocr | semantic art]]></title>
   <link href="http://blog.semanticart.com/blog/blog/categories/ocr/atom.xml" rel="self"/>
   <link href="http://blog.semanticart.com/blog/"/>
-  <updated>2014-12-31T17:50:47-06:00</updated>
+  <updated>2014-12-31T17:51:07-06:00</updated>
   <id>http://blog.semanticart.com/blog/</id>
   <author>
     <name><![CDATA[Jeffrey Chupp]]></name>
@@ -18,7 +18,7 @@
     <link href="http://blog.semanticart.com/blog/blog/2012/11/18/quick-and-dirty-ocr-for-letterpress-and-other-tile-based-games/"/>
     <updated>2012-11-18T00:00:00-06:00</updated>
     <id>http://blog.semanticart.com/blog/blog/2012/11/18/quick-and-dirty-ocr-for-letterpress-and-other-tile-based-games</id>
-    <content type="html"><![CDATA[<p>{% img right /images/light.png 160 240 &lsquo;Light Theme Game Board&rsquo; %}</p>
+    <content type="html"><![CDATA[<p><img class="right" src="/images/light.png" width="160" height="240" title="&lsquo;Light Theme Game Board&rsquo;" ></p>
 
 <p>I&rsquo;ve been playing enough <a href="https://itunes.apple.com/us/app/letterpress-word-game/id526619424?mt=8">Letterpress</a> lately to realize that I&rsquo;m not great at it. This is super frustrating for me when this is a game that you could easily teach a computer to play.</p>
 
