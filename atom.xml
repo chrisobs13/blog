@@ -1,150 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
 
-<!DOCTYPE HTML>
-<html>
-<head>
-	<script data-cfasync="false" type="text/javascript" src="//use.typekit.net/axj3cfp.js"></script>
-	<script data-cfasync="false" type="text/javascript">try{Typekit.load();}catch(e){}</script>
-	<meta charset="utf-8">
-	<title>code should say something  | semantic art</title>
-
-<meta name="author" content="Jeffrey Chupp"> 
-
-<meta name="description" content="personal weblog of jeffrey chupp"> <meta name="keywords" content="">
-
-	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-
-	<link href="/atom.xml" rel="alternate" title="semantic art" type="application/atom+xml">
-	<link rel="canonical" href="">
-	<link href="/favicon.png" rel="shortcut icon">
-	<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
-	<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
-	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
-	<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" type="text/css" media="screen" />
-<script type="text/javascript" src="/fancybox/jquery.fancybox.pack.js"></script>
-
-<script language="Javascript" type="text/javascript">
-$(document).ready(
-  function() {
-    (function($) {
-      $(".fancybox[data-content-id]").each(function() {
-        this.href = $(this).data('content-id');
-      });
-      $(".fancybox").fancybox({
-        beforeLoad: function() {
-          var el, 
-              id = $(this.element).data('title-id');
-
-          if (id) {
-            el = $('#' + id);
-
-            if (el.length) {
-              this.title = el.html();
-            }
-          }
-          if ($(this).data('content')) {
-            this.content = $(this).data('content');
-          }
-        },
-        helpers: {
-          title: {
-            type: 'inside'
-          }
-        }
-      });
-    })(jQuery);
-  }
-);
-</script>
-	
-</head>
-
-
-<body>
-	<header id="header" class="inner"><h1><a href="/">semantic art</a></h1>
-<h4>code should say something</h4>
-<nav id="main-nav"><ul>
-	<li><a href="/">Blog</a></li>
-	<li><a href="/archives">Archive</a></li>
-</ul>
-</nav>
-<nav id="mobile-nav">
-	<div class="alignleft menu">
-		<a class="button">Menu</a>
-		<div class="container"><ul>
-	<li><a href="/">Blog</a></li>
-	<li><a href="/archives">Archive</a></li>
-</ul>
-</div>
-	</div>
-	<div class="alignright search">
-		<a class="button"></a>
-		<div class="container">
-			<form action="http://google.com/search" method="get">
-				<input type="text" name="q" results="0">
-				<input type="hidden" name="q" value="site:blog.semanticart.com/blog">
-			</form>
-		</div>
-	</div>
-</nav>
-
-
-</header>
-
-	<div id="content" class="inner">
-
-
-    <article class="post">
-	<h2 class="title">
-		
-		<a href="/blog/2014/12/31/2014-year-in-review/">
-		
-			2014 Year-In-Review</a>
-	</h2>
-	<div class="entry-content">
-		<p>2014 was a great but complicated year. Here&rsquo;s a completely unnecessary and self-indulgent look back at some of it.</p>
-
-
-		
-		<a href="/blog/2014/12/31/2014-year-in-review/" class="more-link">Read on &rarr;</a>
-	</div>
-
-
-<div class="meta">
-	<div class="date">
-
-
-
-
-
-
-
+  <title><![CDATA[semantic art]]></title>
+  <link href="http://blog.semanticart.com/blog/atom.xml" rel="self"/>
+  <link href="http://blog.semanticart.com/blog/"/>
+  <updated>2014-12-31T17:44:38-06:00</updated>
+  <id>http://blog.semanticart.com/blog/</id>
+  <author>
+    <name><![CDATA[Jeffrey Chupp]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
 
   
+  <entry>
+    <title type="html"><![CDATA[2014 Year-In-Review]]></title>
+    <link href="http://blog.semanticart.com/blog/blog/2014/12/31/2014-year-in-review/"/>
+    <updated>2014-12-31T18:50:00-06:00</updated>
+    <id>http://blog.semanticart.com/blog/blog/2014/12/31/2014-year-in-review</id>
+    <content type="html"><![CDATA[<p>2014 was a great but complicated year. Here&rsquo;s a completely unnecessary and self-indulgent look back at some of it.</p>
+
+<!--more-->
 
 
-<time datetime="2014-12-31T18:50:00-06:00" pubdate data-updated="true">Dec 31<span>st</span>, 2014</time></div>
-	
+<h2>Coding</h2>
 
-<div class="tags">
+<p>This year I moved away from doing full-time Rails to working on single-page Backbone apps with Java APIs. I still reach for Ruby as my scripting language, but I&rsquo;m solving different problems these days. I still feel sluggish in Java and am working to pick up some best-practices. I&rsquo;ve also been enjoying playing with <a href="http://elixir-lang.org/">Elixir</a>.</p>
 
-	<a class='category' href='/blog/categories/introspection/'>introspection</a>
+<p>I didn&rsquo;t contribute much to open source this year. This is probably related to a lack of free time from changing jobs and my daughter being born. <a href="http://www.hubspot.com/">My current company</a> has many internal tools so a lot of my remaining tinkering energies were spent improving those.</p>
 
-</div>
+<p>Next year I&rsquo;d like to work more on open source and dig deeper into functional programming.</p>
 
+<h2>Music</h2>
 
-	
-</div></article>
+<p>Thanks to <a href="http://www.last.fm/user/violencenow">last.fm</a>, I can see that roughly half my top 15 artists in 2014 were artists I discovered this year.</p>
 
+<p><img class="right" src="http://blog.semanticart.com/blog/images/top-artists-2014.png" title="'2014 Top Artists'" ></p>
 
-    <article class="post">
-	<h2 class="title">
-		
-		<a href="/blog/2014/01/19/untwisting-a-hypertext-narrative-peg-to-the-rescue/">
-		
-			Untwisting a Hypertext Narrative - PEG to the Rescue!</a>
-	</h2>
-	<div class="entry-content">
-		<p>In this post you&rsquo;ll learn why I think Parsing Expression Grammars are awesome and see an example of how I built one to scratch an itch.</p>
+<p>The chart for the last 3 months is also interesting.</p>
+
+<p><img class="right" src="http://blog.semanticart.com/blog/images/top-artists-2014-last-three.png" title="'2014 Top Artists of Last Three Months'" ></p>
+
+<p>Themes for the year include punk, newer emo bands, and Norwegian dream pop&hellip; I didn&rsquo;t see that last one coming, but <a href="http://www.last.fm/music/Bendik">Bendik</a> and <a href="http://www.last.fm/music/Frode+Johannessen">Frode Johannessen</a> hit me perfectly in the past few months. Amazingly, Frode is essentially ungoogleable and only has 463 last.fm listeners at the time I write this. <a href="https://www.youtube.com/watch?v=Nb_-QK9wPas">Det gjør någe me meg</a> is worth a listen.</p>
+
+<p>I believe those last two artists were recommendations from <a href="http://www.last.fm/music/Youth+Pictures+of+Florence+Henderson">Youth Pictures of Florence Henderson</a> who I continue to love like no other.</p>
+
+<p>Album of the year for me is a toss-up between Prawn&rsquo;s <a href="http://topshelfrecords.bandcamp.com/album/kingfisher">Kingfisher</a> and The Hotelier&rsquo;s <a href="http://thehotelyear.bandcamp.com/album/home-like-noplace-is-there">Home, Like Noplace Is There</a>. Both are stellar and you should frankly drop whatever you&rsquo;re doing and listen to both of them right now. I&rsquo;ll wait.</p>
+
+<h2>Reading</h2>
+
+<p>For the second year in a row, I set and completed a goal of reading fifty books for the <a href="https://www.goodreads.com/challenges/1914-2014-reading-challenge">Goodreads Reading Challenge</a>. Despite reading 68 books last year, I just barely finished 50 this year. The average page count per book was 430. <a href="https://www.goodreads.com/user_challenges/1225227">Looking at the books I read</a>, you see mostly Sci-fi and Fantasy with a few nonfiction books thrown in.</p>
+
+<p>Brandon Sanderson continues to rock my world with his <a href="https://www.goodreads.com/book/show/7235533-the-way-of-kings">The Way of Kings</a> and the sequel accounting for 2k+ pages of goodness. Scott Lynch&rsquo;s <a href="https://www.goodreads.com/book/show/127455.The_Lies_of_Locke_Lamora">Gentleman Bastard</a> books were fun heist stories with lovable rogues. The strangest but most loved book was Catherynne M. Valente&rsquo;s <a href="https://www.goodreads.com/book/show/12887497-silently-and-very-fast">Silently and Very Fast</a> which tells the story of the life of a budding AI through dreamy fairytale symbolism. It certainly isn&rsquo;t for everyone, but I found it to be an important read.</p>
+
+<p>Next year, I actually plan to read less with an eye towards diversifying my hobbies. I&rsquo;ll probably set a goal of 30 books. Additionally, I&rsquo;d like that to include more technical writing.</p>
+
+<h2>Hobbies</h2>
+
+<p>This year reading was essentially my only hobby besides playing with my son Trey (10). In addition to playing in the park and such, we spent entirely too much time playing video games together. Favorites from this year include <a href="http://www.awesomenauts.com/">Awesomenauts</a> and adventure games like <a href="http://en.wikipedia.org/wiki/Day_of_the_Tentacle">Day of the Tentacle</a>, <a href="http://www.gog.com/game/deponia">Deponia</a>, and <a href="http://www.gog.com/game/the_ballads_of_reemus_when_the_bed_bites">Ballads of Reemus</a>. Trey also played his first FPS, <a href="http://www.gog.com/game/tower_of_guns">Tower of Guns</a>, and did wonderfully.</p>
+
+<p>Next year I&rsquo;d like to do more toying around with small-electronics (Arduino, etc.) and get Trey involved. I&rsquo;d also like to engage in more physically active hobbies with my son (perhaps rock-climbing?). I&rsquo;ll keep playing adeventure/puzzle games with him, though, since they&rsquo;re good bonding time.</p>
+
+<h2>Family</h2>
+
+<p>I had a daughter this year in May. She&rsquo;s amazing. Trey has been a great big-brother and Julia continues to be an excellent mother. I&rsquo;m a lucky man.</p>
+
+<p>Nothing is more important than family. Next year I&rsquo;ll be asking myself how I can spend more quality time with them.</p>
+
+<h2>Current status: Still not rich.</h2>
+
+<p>For this year&rsquo;s wild attempt at financial freedom I spent a lot of time trying to learn game development. <a href="http://unity3d.com/">Unity</a> is interesting but scaling 2d assets are still a giant pain and I realized I don&rsquo;t have the talent or free-time to be a one-man game studio. Go figure, right? Maybe if I quit my job and doubled-down on it&hellip; but that&rsquo;s just not realistic or what I want right now.</p>
+
+<p>For next year&rsquo;s wild attempt, I&rsquo;d really like to get some sort of SASS going as a side-project. If I&rsquo;ve learned anything working at HubSpot, it is how the economics of SASS are compelling and how having customers giving you money every month is both freeing and empowering. Even if this attempt fails dramatically, there&rsquo;s plenty to learn here.</p>
+
+<h2>Onward</h2>
+
+<p>I have a great job, great friends, and a great family. Alright, 2015, let&rsquo;s do this.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Untwisting a Hypertext Narrative - PEG to the Rescue!]]></title>
+    <link href="http://blog.semanticart.com/blog/blog/2014/01/19/untwisting-a-hypertext-narrative-peg-to-the-rescue/"/>
+    <updated>2014-01-19T13:18:00-06:00</updated>
+    <id>http://blog.semanticart.com/blog/blog/2014/01/19/untwisting-a-hypertext-narrative-peg-to-the-rescue</id>
+    <content type="html"><![CDATA[<p>In this post you&rsquo;ll learn why I think Parsing Expression Grammars are awesome and see an example of how I built one to scratch an itch.</p>
 
 <h2>The Itch</h2>
 
@@ -550,48 +490,15 @@ $(document).ready(
 <p>Here&rsquo;s the <a href="https://github.com/semanticart/cyoa-parser">cyoa-parser on github</a>. It includes a <a href="https://github.com/semanticart/cyoa-parser/blob/master/examples/smell-ya-later.md">hilariously bad speed-story</a> I wrote for my son when he insisted on a CYOA bedtime story 10 minutes before bed.</p>
 
 <p>If you&rsquo;d like to learn more about Parslet from someone who knows it better than me, check out <a href="http://www.confreaks.com/videos/2730-wickedgoodruby-writing-dsl-s-with-parslet">Jason Garber&rsquo;s Wicked Good Ruby talk</a>.</p>
-
-		
-		
-	</div>
-
-
-<div class="meta">
-	<div class="date">
-
-
-
-
-
-
-
-
+]]></content>
+  </entry>
   
-
-
-<time datetime="2014-01-19T13:18:00-06:00" pubdate data-updated="true">Jan 19<span>th</span>, 2014</time></div>
-	
-
-<div class="tags">
-
-	<a class='category' href='/blog/categories/parslet/'>parslet</a>, <a class='category' href='/blog/categories/peg/'>peg</a>, <a class='category' href='/blog/categories/ruby/'>ruby</a>, <a class='category' href='/blog/categories/writing/'>writing</a>
-
-</div>
-
-
-	
-</div></article>
-
-
-    <article class="post">
-	<h2 class="title">
-		
-		<a href="/blog/2014/01/11/writing-hypertext-fiction-in-markdown/">
-		
-			Writing Hypertext Fiction in Markdown</a>
-	</h2>
-	<div class="entry-content">
-		<p>Remember <a href="https://en.wikipedia.org/wiki/Choose_Your_Own_Adventure">Choose Your Own Adventure</a> books? I fondly remember finding new ways to get myself killed as I explored Aztec ruins or fought off aliens. Death or adventure waited just a few pages away and  I was the one calling all the shots.</p>
+  <entry>
+    <title type="html"><![CDATA[Writing Hypertext Fiction in Markdown]]></title>
+    <link href="http://blog.semanticart.com/blog/blog/2014/01/11/writing-hypertext-fiction-in-markdown/"/>
+    <updated>2014-01-11T18:50:00-06:00</updated>
+    <id>http://blog.semanticart.com/blog/blog/2014/01/11/writing-hypertext-fiction-in-markdown</id>
+    <content type="html"><![CDATA[<p>Remember <a href="https://en.wikipedia.org/wiki/Choose_Your_Own_Adventure">Choose Your Own Adventure</a> books? I fondly remember finding new ways to get myself killed as I explored Aztec ruins or fought off aliens. Death or adventure waited just a few pages away and  I was the one calling all the shots.</p>
 
 <p>Introducing my son to <a href="https://en.wikipedia.org/wiki/Hypertext_fiction">Hypertext Fiction</a> has rekindled my interest. I wondered how difficult it would be to throw something together to let me easily write CYOA-style books my kid could read on a kindle. I love markdown, so a toolchain built around it was definitely in order.</p>
 
@@ -697,53 +604,20 @@ $(document).ready(
 
 <p>Here&rsquo;s a preview as seen in <a href="http://www.amazon.com/gp/feature.html?docId=1000765261">Kindle Previewer</a></p>
 
-<p><img class="right" src="/images/preview.png" width="328" height="560" title="'Example Generated mobi file'" ></p>
+<p><img class="right" src="http://blog.semanticart.com/blog/images/preview.png" width="328" height="560" title="'Example Generated mobi file'" ></p>
 
-<p>And here are the generated <a href="/story.epub">EPUB</a> and <a href="/story.mobi">.mobi</a> files and the <a href="/story.md">markdown source file</a>.</p>
+<p>And here are the generated <a href="http://blog.semanticart.com/blog/story.epub">EPUB</a> and <a href="http://blog.semanticart.com/blog/story.mobi">.mobi</a> files and the <a href="http://blog.semanticart.com/blog/story.md">markdown source file</a>.</p>
 
 <p>Now, get writing!</p>
-
-		
-		
-	</div>
-
-
-<div class="meta">
-	<div class="date">
-
-
-
-
-
-
-
-
+]]></content>
+  </entry>
   
-
-
-<time datetime="2014-01-11T18:50:00-06:00" pubdate data-updated="true">Jan 11<span>th</span>, 2014</time></div>
-	
-
-<div class="tags">
-
-	<a class='category' href='/blog/categories/writing/'>writing</a>
-
-</div>
-
-
-	
-</div></article>
-
-
-    <article class="post">
-	<h2 class="title">
-		
-		<a href="/blog/2013/11/11/a-proper-api-proxy-written-in-go/">
-		
-			A Proper API Proxy Written in Go</a>
-	</h2>
-	<div class="entry-content">
-		<p>A little over a month ago, I blogged about <a href="http://blog.semanticart.com/blog/2013/09/23/a-simple-api-proxy-written-in-go/">a API proxy written in Go</a>. This post contained a functioning but incredibly naive (not to mention unidiomatic) piece of Go code intended to allow proxying API requests while hiding your API keys. Here&rsquo;s an updated version that makes better use of the Go standard library and works using layers like Ruby&rsquo;s middleware (for more on this topic, <a href="http://justinas.org/writing-http-middleware-in-go/">see the excellent article here</a>). It also improves upon the original in that it will work with all HTTP verbs.</p>
+  <entry>
+    <title type="html"><![CDATA[A proper API proxy written in Go]]></title>
+    <link href="http://blog.semanticart.com/blog/blog/2013/11/11/a-proper-api-proxy-written-in-go/"/>
+    <updated>2013-11-11T16:16:00-06:00</updated>
+    <id>http://blog.semanticart.com/blog/blog/2013/11/11/a-proper-api-proxy-written-in-go</id>
+    <content type="html"><![CDATA[<p>A little over a month ago, I blogged about <a href="http://blog.semanticart.com/blog/2013/09/23/a-simple-api-proxy-written-in-go/">a API proxy written in Go</a>. This post contained a functioning but incredibly naive (not to mention unidiomatic) piece of Go code intended to allow proxying API requests while hiding your API keys. Here&rsquo;s an updated version that makes better use of the Go standard library and works using layers like Ruby&rsquo;s middleware (for more on this topic, <a href="http://justinas.org/writing-http-middleware-in-go/">see the excellent article here</a>). It also improves upon the original in that it will work with all HTTP verbs.</p>
 
 <p>When writing the first version, I tried using <a href="http://golang.org/pkg/net/http/httputil/#NewSingleHostReverseProxy">httputil.NewSingleHostReverseProxy</a> since the name sounds like exactly what I was trying to do. There was an important piece missing by default, though, which made the library seem mysteriously broken. Being a newbie in a hurry, I went with the solution you can see in the previous post.</p>
 
@@ -864,48 +738,15 @@ $(document).ready(
 <p>The code is available on <a href="https://github.com/semanticart/simpleapiproxy">github</a> and it runs quite well with the <a href="https://github.com/kr/heroku-buildpack-go">heroku go buildpack</a>.</p>
 
 <p>It has a couple tests. I should add some more, but I&rsquo;m not totally happy with the current testing approach. Feedback is very welcome.</p>
-
-		
-		
-	</div>
-
-
-<div class="meta">
-	<div class="date">
-
-
-
-
-
-
-
-
+]]></content>
+  </entry>
   
-
-
-<time datetime="2013-11-11T16:16:00-06:00" pubdate data-updated="true">Nov 11<span>th</span>, 2013</time></div>
-	
-
-<div class="tags">
-
-	<a class='category' href='/blog/categories/apis/'>apis</a>, <a class='category' href='/blog/categories/go/'>go</a>
-
-</div>
-
-
-	
-</div></article>
-
-
-    <article class="post">
-	<h2 class="title">
-		
-		<a href="/blog/2013/09/23/a-simple-api-proxy-written-in-go/">
-		
-			A Simple API Proxy Written in Go</a>
-	</h2>
-	<div class="entry-content">
-		<h1>UPATE: see <a href="http://blog.semanticart.com/blog/2013/11/11/a-proper-api-proxy-written-in-go/">&ldquo;A proper API proxy written in Go&rdquo;</a> for a better solution to this problem.</h1>
+  <entry>
+    <title type="html"><![CDATA[A simple API proxy written in Go]]></title>
+    <link href="http://blog.semanticart.com/blog/blog/2013/09/23/a-simple-api-proxy-written-in-go/"/>
+    <updated>2013-09-23T00:00:00-05:00</updated>
+    <id>http://blog.semanticart.com/blog/blog/2013/09/23/a-simple-api-proxy-written-in-go</id>
+    <content type="html"><![CDATA[<h1>UPATE: see <a href="http://blog.semanticart.com/blog/2013/11/11/a-proper-api-proxy-written-in-go/">&ldquo;A proper API proxy written in Go&rdquo;</a> for a better solution to this problem.</h1>
 
 <h3>The problem:</h3>
 
@@ -1076,48 +917,15 @@ Total:       1085 1730 609.4   1644    3875
 </code></pre>
 
 <p>Scientific or not, that&rsquo;s performance I can live with. And hopefully those API endpoints aren&rsquo;t quite taking a full second per request.</p>
-
-		
-		
-	</div>
-
-
-<div class="meta">
-	<div class="date">
-
-
-
-
-
-
-
-
+]]></content>
+  </entry>
   
-
-
-<time datetime="2013-09-23T00:00:00-05:00" pubdate data-updated="true">Sep 23<span>rd</span>, 2013</time></div>
-	
-
-<div class="tags">
-
-	<a class='category' href='/blog/categories/apis/'>apis</a>, <a class='category' href='/blog/categories/go/'>go</a>, <a class='category' href='/blog/categories/rails/'>rails</a>
-
-</div>
-
-
-	
-</div></article>
-
-
-    <article class="post">
-	<h2 class="title">
-		
-		<a href="/blog/2013/08/29/unicorn-pukes-serving-large-files/">
-		
-			Unicorn Pukes Serving Large Files</a>
-	</h2>
-	<div class="entry-content">
-		<p>Earlier today I was getting this weird <a href="http://unicorn.bogomips.org/">unicorn</a> error on heroku when trying to serve a retina-sized image.</p>
+  <entry>
+    <title type="html"><![CDATA[Unicorn Pukes Serving Large Files]]></title>
+    <link href="http://blog.semanticart.com/blog/blog/2013/08/29/unicorn-pukes-serving-large-files/"/>
+    <updated>2013-08-29T13:46:00-05:00</updated>
+    <id>http://blog.semanticart.com/blog/blog/2013/08/29/unicorn-pukes-serving-large-files</id>
+    <content type="html"><![CDATA[<p>Earlier today I was getting this weird <a href="http://unicorn.bogomips.org/">unicorn</a> error on heroku when trying to serve a retina-sized image.</p>
 
 <pre><code>ERROR -- : app error: undefined method `each' for nil:NilClass (NoMethodError)
 ERROR -- : [..]/unicorn-4.6.3/lib/unicorn/http_response.rb:60:in `http_response_write'
@@ -1146,48 +954,15 @@ ERROR -- : [..]/unicorn-4.6.3/bin/unicorn_rails:209:in `&lt;top (required)&gt;'
 <p>No more error.</p>
 
 <p>Now, the real solution is to not serve large images through unicorn on heroku. But hooking up a CDN is another problem for another time.</p>
-
-		
-		
-	</div>
-
-
-<div class="meta">
-	<div class="date">
-
-
-
-
-
-
-
-
+]]></content>
+  </entry>
   
-
-
-<time datetime="2013-08-29T13:46:00-05:00" pubdate data-updated="true">Aug 29<span>th</span>, 2013</time></div>
-	
-
-<div class="tags">
-
-	<a class='category' href='/blog/categories/rails/'>rails</a>, <a class='category' href='/blog/categories/ruby/'>ruby</a>, <a class='category' href='/blog/categories/unicorn/'>unicorn</a>
-
-</div>
-
-
-	
-</div></article>
-
-
-    <article class="post">
-	<h2 class="title">
-		
-		<a href="/blog/2013/08/27/letterpress-word-finder/">
-		
-			Letterpress Word Finder</a>
-	</h2>
-	<div class="entry-content">
-		<p>In an attempt to start to blog more, here&rsquo;s a quick follow-up post on the <a href="http://blog.semanticart.com/blog/2012/11/18/quick-and-dirty-ocr-for-letterpress-and-other-tile-based-games/">previous Letterpress article</a>.</p>
+  <entry>
+    <title type="html"><![CDATA[Letterpress Word Finder]]></title>
+    <link href="http://blog.semanticart.com/blog/blog/2013/08/27/letterpress-word-finder/"/>
+    <updated>2013-08-27T16:13:00-05:00</updated>
+    <id>http://blog.semanticart.com/blog/blog/2013/08/27/letterpress-word-finder</id>
+    <content type="html"><![CDATA[<p>In an attempt to start to blog more, here&rsquo;s a quick follow-up post on the <a href="http://blog.semanticart.com/blog/2012/11/18/quick-and-dirty-ocr-for-letterpress-and-other-tile-based-games/">previous Letterpress article</a>.</p>
 
 <h3>Background</h3>
 
@@ -1283,48 +1058,15 @@ protractedly
 </code></pre>
 
 <p>Excellent. Of course, not all words in your system&rsquo;s dictionary file may be playable, YMMV, etc.</p>
-
-		
-		
-	</div>
-
-
-<div class="meta">
-	<div class="date">
-
-
-
-
-
-
-
-
+]]></content>
+  </entry>
   
-
-
-<time datetime="2013-08-27T16:13:00-05:00" pubdate data-updated="true">Aug 27<span>th</span>, 2013</time></div>
-	
-
-<div class="tags">
-
-	<a class='category' href='/blog/categories/letterpress/'>letterpress</a>, <a class='category' href='/blog/categories/ruby/'>ruby</a>
-
-</div>
-
-
-	
-</div></article>
-
-
-    <article class="post">
-	<h2 class="title">
-		
-		<a href="/blog/2012/11/18/quick-and-dirty-ocr-for-letterpress-and-other-tile-based-games/">
-		
-			Quick and Dirty OCR for Letterpress &amp; Other Tile-based Games</a>
-	</h2>
-	<div class="entry-content">
-		<p><img class="right" src="/images/light.png" width="160" height="240" title="'Light Theme Game Board'" ></p>
+  <entry>
+    <title type="html"><![CDATA[Quick and Dirty OCR for Letterpress &amp; Other Tile-based Games]]></title>
+    <link href="http://blog.semanticart.com/blog/blog/2012/11/18/quick-and-dirty-ocr-for-letterpress-and-other-tile-based-games/"/>
+    <updated>2012-11-18T00:00:00-06:00</updated>
+    <id>http://blog.semanticart.com/blog/blog/2012/11/18/quick-and-dirty-ocr-for-letterpress-and-other-tile-based-games</id>
+    <content type="html"><![CDATA[<p><img class="right" src="http://blog.semanticart.com/blog/images/light.png" width="160" height="240" title="'Light Theme Game Board'" ></p>
 
 <p>I&rsquo;ve been playing enough <a href="https://itunes.apple.com/us/app/letterpress-word-game/id526619424?mt=8">Letterpress</a> lately to realize that I&rsquo;m not great at it. This is super frustrating for me when this is a game that you could easily teach a computer to play.</p>
 
@@ -1342,48 +1084,94 @@ protractedly
 
 <p>I wondered how quickly I could throw something together to simply parse the game board into a string of letters. It turns out it is super easy. To get started I took a screenshot of a game in progress and downloaded it from my phone.</p>
 
-
-		
-		<a href="/blog/2012/11/18/quick-and-dirty-ocr-for-letterpress-and-other-tile-based-games/" class="more-link">Read on &rarr;</a>
-	</div>
+<!--more-->
 
 
-<div class="meta">
-	<div class="date">
+<p>I&rsquo;d heard about <a href="https://code.google.com/p/tesseract-ocr/">tesseract</a> back when it was first announced and it seemed worth giving it a shot. I started with <code>brew install tesseract</code> and tried simply passing in the board image unmodified:</p>
+
+<pre><code>$ tesseract light.png /tmp/output
+$ cat /tmp/output.txt
+R
+QM V
+66:
+KO
+</code></pre>
+
+<p>Not even close. The homebrew instructions recommend grayscaling the image first with <a href="http://www.imagemagick.org/script/index.php">ImageMagick</a>, so what do we get after that?</p>
+
+<pre><code>$ convert light.png -type Grayscale /tmp/gray.tif
+$ tesseract /tmp/gray.tif /tmp/output
+$ cat /tmp/output.txt
+
+QM
+V
+w
+A‘ K
+6'
+</code></pre>
+
+<p><strong>Ugh</strong>, even worse.<a href="#tesseract-parsing-footnote"><sup>1</sup></a></p>
+
+<p>But poking through tesseract&rsquo;s options reveal some promise via pagesegmode settings:</p>
+
+<pre><code>7 = Treat the image as a single text line.
+</code></pre>
+
+<p>and</p>
+
+<pre><code>10 = Treat the image as a single character.
+</code></pre>
+
+<p>7 turned out to be a bust, but after testing option 10 on a few individual tiles, things were starting to look up. So let&rsquo;s just break the image up into the individual 25 tiles and recognize each one.</p>
+
+<p>There may be more elegant ways to break the image into tiles, but I ended up using two ImageMagick commands:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'><span class="c"># remove the non-tile content (i.e. the scores, etc. in the header)</span>
+</span><span class='line'>convert light.png -gravity North -chop 0x320 /tmp/headless.png
+</span><span class='line'><span class="c"># break the tile-content into 128x128px chunks</span>
+</span><span class='line'>convert /tmp/headless.png -crop 128x128 /tmp/tile_%02d.png
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Then I wrapped these two commands up in a <a href="https://github.com/semanticart/letterpress-board-parser/blob/master/board_parser.rb">ruby class for ease of use</a> and wrote <a href="https://github.com/semanticart/letterpress-board-parser/blob/master/test/board_parser_test.rb">a simple test</a>.</p>
+
+<p>so, running the ruby class:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>ruby -r ./board_parser -e <span class="s2">&quot;puts BoardParser.new(&#39;light.png&#39;).tiles.join&quot;</span>
+</span><span class='line'>KTVHROBDRBDLCYTPLEWAFZYMB
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Bingo! A perfect match, ready to be compared to a dictionary of valid words.</p>
+
+<p>It turns out tesseract is great at matching single tiles regardless of color scheme or captured state of the tile. The tests for the code run against screenshots from all available color schemes.</p>
+
+<p>This approach is dead-simple and leans heavily on solid existing technologies. Because of this, the glue code itself doesn&rsquo;t have to be clever at all :)</p>
+
+<p>Note that this quick hack is just designed to work against iPhone 4 resolution screenshots -you would have to (at least) change the header crop size for iPhone 5.</p>
+
+<hr />
+
+
+<p id="tesseract-parsing-footnote">1: The recommendation to convert the image to grayscale is a good hint that tesseract probably relies a lot on consistent contrast. This coupled with the fact that we&#8217;re dealing with random letters instead of words definitely stacks the cards against tesseract. Dealing with individual tiles/characters solves both the confusion of multiple contrasts and the confusion of dealing with random gibberish.</p>
 
 
 
-
-
-
-
-
+]]></content>
+  </entry>
   
-
-
-<time datetime="2012-11-18T00:00:00-06:00" pubdate data-updated="true">Nov 18<span>th</span>, 2012</time></div>
-	
-
-<div class="tags">
-
-	<a class='category' href='/blog/categories/imagemagick/'>imagemagick</a>, <a class='category' href='/blog/categories/letterpress/'>letterpress</a>, <a class='category' href='/blog/categories/ocr/'>ocr</a>, <a class='category' href='/blog/categories/ruby/'>ruby</a>, <a class='category' href='/blog/categories/tesseract/'>tesseract</a>
-
-</div>
-
-
-	
-</div></article>
-
-
-    <article class="post">
-	<h2 class="title">
-		
-		<a href="/blog/2012/10/09/flashing-sprites-arent-as-sexy-as-they-sound/">
-		
-			Flashing Sprites Aren&#8217;t as Sexy as They Sound</a>
-	</h2>
-	<div class="entry-content">
-		<p>My skills have traditionally skewed towards the back-end so I&rsquo;m still finding lots of new tricks in front-end development that are new to me. Here&rsquo;s a quick example&hellip;</p>
+  <entry>
+    <title type="html"><![CDATA[Flashing sprites aren't as sexy as they sound]]></title>
+    <link href="http://blog.semanticart.com/blog/blog/2012/10/09/flashing-sprites-arent-as-sexy-as-they-sound/"/>
+    <updated>2012-10-09T20:15:00-05:00</updated>
+    <id>http://blog.semanticart.com/blog/blog/2012/10/09/flashing-sprites-arent-as-sexy-as-they-sound</id>
+    <content type="html"><![CDATA[<p>My skills have traditionally skewed towards the back-end so I&rsquo;m still finding lots of new tricks in front-end development that are new to me. Here&rsquo;s a quick example&hellip;</p>
 
 <p>I recently created a button with <a href="http://compass-style.org/help/tutorials/spriting/" title="Compass Sprite Tutorial">Compass sprites</a> that had images for the default state, hover state, and active (pressed) state.</p>
 
@@ -1465,87 +1253,7 @@ protractedly
 
 
 <p>Now we&rsquo;re using the same sprite specified in the original <code>.special_button</code> class and just changing the position in the other states. Our flashing problem is gone.</p>
-
-		
-		
-	</div>
-
-
-<div class="meta">
-	<div class="date">
-
-
-
-
-
-
-
-
+]]></content>
+  </entry>
   
-
-
-<time datetime="2012-10-09T20:15:00-05:00" pubdate data-updated="true">Oct 9<span>th</span>, 2012</time></div>
-	
-
-<div class="tags">
-
-	<a class='category' href='/blog/categories/compass/'>compass</a>, <a class='category' href='/blog/categories/css/'>css</a>, <a class='category' href='/blog/categories/front-end/'>front-end</a>
-
-</div>
-
-
-	
-</div></article>
-
-<nav id="pagenavi">
-    
-    
-    <div class="center"><a href="/archives">Blog Archives</a></div>
-</nav></div>
-	<footer id="footer" class="inner">Copyright &copy; 2014
-
-    Jeffrey Chupp
-
-<br>
-Powered by Octopress.
-</footer>
-	<script src="/javascripts/slash.js"></script>
-<script src="/javascripts/jquery.fancybox.pack.js"></script>
-<script type="text/javascript">
-(function($){
-	$('.fancybox').fancybox();
-})(jQuery);
-</script> <!-- Delete or comment this line to disable Fancybox -->
-
-
-<script type="text/javascript">
-      var disqus_shortname = 'semanticart';
-      
-        
-        var disqus_script = 'count.js';
-      
-    (function () {
-      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
-      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
-      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
-    }());
-</script>
-
-
-
-	<script type="text/javascript">
-		var _gaq = _gaq || [];
-		_gaq.push(['_setAccount', 'UA-35446138-1']);
-		_gaq.push(['_trackPageview']);
-
-		(function() {
-			var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-			ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-			var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-		})();
-	</script>
-
-
-
-</body>
-</html>
+</feed>

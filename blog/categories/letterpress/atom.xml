@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: letterpress | semantic art]]></title>
+  <link href="http://blog.semanticart.com/blog/blog/categories/letterpress/atom.xml" rel="self"/>
+  <link href="http://blog.semanticart.com/blog/"/>
+  <updated>2014-12-31T17:44:38-06:00</updated>
+  <id>http://blog.semanticart.com/blog/</id>
+  <author>
+    <name><![CDATA[Jeffrey Chupp]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Letterpress Word Finder]]></title>
+    <link href="http://blog.semanticart.com/blog/blog/2013/08/27/letterpress-word-finder/"/>
+    <updated>2013-08-27T16:13:00-05:00</updated>
+    <id>http://blog.semanticart.com/blog/blog/2013/08/27/letterpress-word-finder</id>
+    <content type="html"><![CDATA[<p>In an attempt to start to blog more, here&rsquo;s a quick follow-up post on the <a href="http://blog.semanticart.com/blog/2012/11/18/quick-and-dirty-ocr-for-letterpress-and-other-tile-based-games/">previous Letterpress article</a>.</p>
+
+<h3>Background</h3>
+
+<p>As a reminder, here&rsquo;s how I outlined steps in creating a Letterpress solver:</p>
+
+<ol>
+<li>Take screenshot of game and import it into solver</li>
+<li>Parse the board into a string of letters</li>
+<li>Reduce a dictionary of valid words against those characters to find playable words</li>
+<li>Optionally make recommendations of which word to play based on current board state and strategy. (i.e. don&rsquo;t be naive)</li>
+</ol>
+
+
+<p>We built step one (sort-of) and step two in the previous article, so let&rsquo;s move on to step three.</p>
+
+<h3>Requirements</h3>
+
+<p>We want our script to fulfill the following requirements:</p>
+
+<ol>
+<li>Accept the board letters via STDIN or commandline arguments.</li>
+<li>Reduce the dictionary words against those letters.</li>
+<li>Dump out matching words (without regard to board state/strategy).</li>
+</ol>
+
+
+<h3>Implementation</h3>
+
+<p>We&rsquo;ll take either an argument or read STDIN and downcase it.</p>
+
+<p><code>ruby
+letters = (ARGV[0] || STDIN.read).downcase
+</code></p>
+
+<p>I don&rsquo;t have the official Letterpress dictionary (a quick googling will get you on the right track if you insist), but every good unix-y system has a dictionary file.</p>
+
+<pre><code>$ cat /usr/share/dict/words | wc -l
+235886
+</code></pre>
+
+<p>OK, that&rsquo;s a lot of words. Let&rsquo;s pull them in and downcase them too.
+<code>ruby
+words = File.read("/usr/share/dict/words").downcase.split("\n")
+</code></p>
+
+<p>Now, the only really interesting part: a method to determine if a word can be constructed from letters. I&rsquo;ve shamelessly borrowed a perfectly fast solution from <a href="http://stackoverflow.com/questions/11349544/ruby-optimize-the-comparison-of-two-arrays-with-duplicates">Stackoverflow</a>.
+<code>ruby
+def is_subset?(word, letters)
+  !word.chars.find{|char| word.count(char) &gt; letters.count(char)}
+end
+</code></p>
+
+<p>And now we reduce our words by those that match our letters</p>
+
+<p><code>ruby
+matching_words = words.select do |word|
+  is_subset?(word, letters)
+end
+</code></p>
+
+<p>And there&rsquo;s nothing left to do but dump them out.</p>
+
+<p><code>ruby
+puts matching_words.sort_by(&amp;:length)
+</code></p>
+
+<p>Here&rsquo;s the <a href="https://gist.github.com/semanticart/6346135">entire word generating script</a>.</p>
+
+<p>And an example of using it with the board parser from the previous post:</p>
+
+<pre><code>$ ruby -r ./board_parser -e "puts BoardParser.new('light.png').tiles.join" | ruby letter.rb | tail -n 10
+hermodactyl
+typhlectomy
+cryohydrate
+polydactyle
+pterodactyl
+crymotherapy
+hydrolyzable
+acetylthymol
+overthwartly
+protractedly
+</code></pre>
+
+<p>Excellent. Of course, not all words in your system&rsquo;s dictionary file may be playable, YMMV, etc.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Quick and Dirty OCR for Letterpress &amp; Other Tile-based Games]]></title>
+    <link href="http://blog.semanticart.com/blog/blog/2012/11/18/quick-and-dirty-ocr-for-letterpress-and-other-tile-based-games/"/>
+    <updated>2012-11-18T00:00:00-06:00</updated>
+    <id>http://blog.semanticart.com/blog/blog/2012/11/18/quick-and-dirty-ocr-for-letterpress-and-other-tile-based-games</id>
+    <content type="html"><![CDATA[<p><img class="right" src="/images/light.png" width="160" height="240" title="&lsquo;Light Theme Game Board&rsquo;" ></p>
+
+<p>I&rsquo;ve been playing enough <a href="https://itunes.apple.com/us/app/letterpress-word-game/id526619424?mt=8">Letterpress</a> lately to realize that I&rsquo;m not great at it. This is super frustrating for me when this is a game that you could easily teach a computer to play.</p>
+
+<p>I&rsquo;m not the first person to have that thought. There are plenty of cheating programs for Letterpress (just google or search in the app store).</p>
+
+<p>I haven&rsquo;t investigated these solvers but in thinking about the problem, the basic approach would seem to be:</p>
+
+<ul>
+<li>Take screenshot of game and import it into solver</li>
+<li>Parse the board into a string of letters</li>
+<li>Reduce a dictionary of valid words against those characters to find playable words</li>
+<li>Optionally make recommendations of which word to play based on current board state and strategy.</li>
+</ul>
+
+
+<p>I wondered how quickly I could throw something together to simply parse the game board into a string of letters. It turns out it is super easy. To get started I took a screenshot of a game in progress and downloaded it from my phone.</p>
+
+<!--more-->
+
+
+<p>I&rsquo;d heard about <a href="https://code.google.com/p/tesseract-ocr/">tesseract</a> back when it was first announced and it seemed worth giving it a shot. I started with <code>brew install tesseract</code> and tried simply passing in the board image unmodified:</p>
+
+<pre><code>$ tesseract light.png /tmp/output
+$ cat /tmp/output.txt
+R
+QM V
+66:
+KO
+</code></pre>
+
+<p>Not even close. The homebrew instructions recommend grayscaling the image first with <a href="http://www.imagemagick.org/script/index.php">ImageMagick</a>, so what do we get after that?</p>
+
+<pre><code>$ convert light.png -type Grayscale /tmp/gray.tif
+$ tesseract /tmp/gray.tif /tmp/output
+$ cat /tmp/output.txt
+
+QM
+V
+w
+A‘ K
+6'
+</code></pre>
+
+<p><strong>Ugh</strong>, even worse.<a href="#tesseract-parsing-footnote"><sup>1</sup></a></p>
+
+<p>But poking through tesseract&rsquo;s options reveal some promise via pagesegmode settings:</p>
+
+<pre><code>7 = Treat the image as a single text line.
+</code></pre>
+
+<p>and</p>
+
+<pre><code>10 = Treat the image as a single character.
+</code></pre>
+
+<p>7 turned out to be a bust, but after testing option 10 on a few individual tiles, things were starting to look up. So let&rsquo;s just break the image up into the individual 25 tiles and recognize each one.</p>
+
+<p>There may be more elegant ways to break the image into tiles, but I ended up using two ImageMagick commands:</p>
+
+<p>``` sh</p>
+
+<h1>remove the non-tile content (i.e. the scores, etc. in the header)</h1>
+
+<p>convert light.png -gravity North -chop 0x320 /tmp/headless.png</p>
+
+<h1>break the tile-content into 128x128px chunks</h1>
+
+<p>convert /tmp/headless.png -crop 128x128 /tmp/tile_%02d.png
+```</p>
+
+<p>Then I wrapped these two commands up in a <a href="https://github.com/semanticart/letterpress-board-parser/blob/master/board_parser.rb">ruby class for ease of use</a> and wrote <a href="https://github.com/semanticart/letterpress-board-parser/blob/master/test/board_parser_test.rb">a simple test</a>.</p>
+
+<p>so, running the ruby class:</p>
+
+<p><code>bash
+$ ruby -r ./board_parser -e "puts BoardParser.new('light.png').tiles.join"
+KTVHROBDRBDLCYTPLEWAFZYMB
+</code></p>
+
+<p>Bingo! A perfect match, ready to be compared to a dictionary of valid words.</p>
+
+<p>It turns out tesseract is great at matching single tiles regardless of color scheme or captured state of the tile. The tests for the code run against screenshots from all available color schemes.</p>
+
+<p>This approach is dead-simple and leans heavily on solid existing technologies. Because of this, the glue code itself doesn&rsquo;t have to be clever at all :)</p>
+
+<p>Note that this quick hack is just designed to work against iPhone 4 resolution screenshots -you would have to (at least) change the header crop size for iPhone 5.</p>
+
+<hr />
+
+
+<p id="tesseract-parsing-footnote">1: The recommendation to convert the image to grayscale is a good hint that tesseract probably relies a lot on consistent contrast. This coupled with the fact that we're dealing with random letters instead of words definitely stacks the cards against tesseract. Dealing with individual tiles/characters solves both the confusion of multiple contrasts and the confusion of dealing with random gibberish.</p>
+
+
+
+]]></content>
+  </entry>
+  
+</feed>

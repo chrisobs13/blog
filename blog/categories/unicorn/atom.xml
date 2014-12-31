@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: unicorn | semantic art]]></title>
+  <link href="http://blog.semanticart.com/blog/blog/categories/unicorn/atom.xml" rel="self"/>
+  <link href="http://blog.semanticart.com/blog/"/>
+  <updated>2014-12-31T17:44:38-06:00</updated>
+  <id>http://blog.semanticart.com/blog/</id>
+  <author>
+    <name><![CDATA[Jeffrey Chupp]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Unicorn Pukes Serving Large Files]]></title>
+    <link href="http://blog.semanticart.com/blog/blog/2013/08/29/unicorn-pukes-serving-large-files/"/>
+    <updated>2013-08-29T13:46:00-05:00</updated>
+    <id>http://blog.semanticart.com/blog/blog/2013/08/29/unicorn-pukes-serving-large-files</id>
+    <content type="html"><![CDATA[<p>Earlier today I was getting this weird <a href="http://unicorn.bogomips.org/">unicorn</a> error on heroku when trying to serve a retina-sized image.</p>
+
+<pre><code>ERROR -- : app error: undefined method `each' for nil:NilClass (NoMethodError)
+ERROR -- : [..]/unicorn-4.6.3/lib/unicorn/http_response.rb:60:in `http_response_write'
+ERROR -- : [..]/unicorn-4.6.3/lib/unicorn/http_server.rb:563:in `process_client'
+ERROR -- : [..]/unicorn-4.6.3/lib/unicorn/http_server.rb:633:in `worker_loop'
+ERROR -- : [..]/unicorn-4.6.3/lib/unicorn/http_server.rb:500:in `spawn_missing_workers'
+ERROR -- : [..]/unicorn-4.6.3/lib/unicorn/http_server.rb:142:in `start'
+ERROR -- : [..]/unicorn-4.6.3/bin/unicorn_rails:209:in `&lt;top (required)&gt;'
+</code></pre>
+
+<p>Weird, right?  But sure enough, whenever I tried to view some-image@2x.png, everything went terribly wrong.</p>
+
+<p>Googling took too long to find an answer, so I&rsquo;m sharing my solution here in hopes that it helps someone else (oh, hai, google bot).</p>
+
+<p>The issue is actually a bug in the version of rack-cache required by actionpack in Rails 3.2.14. Attempting to serve files larger than 1mb causes this error.</p>
+
+<p>It has been <a href="https://github.com/rtomayko/rack-cache/issues/42">fixed</a>, but I had to require the master branch for rack-cache to resolve the problem.</p>
+
+<p><code>ruby Gemfile
+gem "rack-cache", github: "rtomayko/rack-cache"
+gem "unicorn"
+</code></p>
+
+<p>No more error.</p>
+
+<p>Now, the real solution is to not serve large images through unicorn on heroku. But hooking up a CDN is another problem for another time.</p>
+]]></content>
+  </entry>
+  
+</feed>

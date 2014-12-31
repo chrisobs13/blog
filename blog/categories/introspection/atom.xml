@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: introspection | semantic art]]></title>
+  <link href="http://blog.semanticart.com/blog/blog/categories/introspection/atom.xml" rel="self"/>
+  <link href="http://blog.semanticart.com/blog/"/>
+  <updated>2014-12-31T17:44:38-06:00</updated>
+  <id>http://blog.semanticart.com/blog/</id>
+  <author>
+    <name><![CDATA[Jeffrey Chupp]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[2014 Year-In-Review]]></title>
+    <link href="http://blog.semanticart.com/blog/blog/2014/12/31/2014-year-in-review/"/>
+    <updated>2014-12-31T18:50:00-06:00</updated>
+    <id>http://blog.semanticart.com/blog/blog/2014/12/31/2014-year-in-review</id>
+    <content type="html"><![CDATA[<p>2014 was a great but complicated year. Here&rsquo;s a completely unnecessary and self-indulgent look back at some of it.</p>
+
+<!--more-->
+
+
+<h2>Coding</h2>
+
+<p>This year I moved away from doing full-time Rails to working on single-page Backbone apps with Java APIs. I still reach for Ruby as my scripting language, but I&rsquo;m solving different problems these days. I still feel sluggish in Java and am working to pick up some best-practices. I&rsquo;ve also been enjoying playing with <a href="http://elixir-lang.org/">Elixir</a>.</p>
+
+<p>I didn&rsquo;t contribute much to open source this year. This is probably related to a lack of free time from changing jobs and my daughter being born. <a href="http://www.hubspot.com/">My current company</a> has many internal tools so a lot of my remaining tinkering energies were spent improving those.</p>
+
+<p>Next year I&rsquo;d like to work more on open source and dig deeper into functional programming.</p>
+
+<h2>Music</h2>
+
+<p>Thanks to <a href="http://www.last.fm/user/violencenow">last.fm</a>, I can see that roughly half my top 15 artists in 2014 were artists I discovered this year.</p>
+
+<p><img class="right" src="/images/top-artists-2014.png" title="&lsquo;2014 Top Artists&rsquo;" ></p>
+
+<p>The chart for the last 3 months is also interesting.</p>
+
+<p><img class="right" src="/images/top-artists-2014-last-three.png" title="&lsquo;2014 Top Artists of Last Three Months&rsquo;" ></p>
+
+<p>Themes for the year include punk, newer emo bands, and Norwegian dream pop&hellip; I didn&rsquo;t see that last one coming, but <a href="http://www.last.fm/music/Bendik">Bendik</a> and <a href="http://www.last.fm/music/Frode+Johannessen">Frode Johannessen</a> hit me perfectly in the past few months. Amazingly, Frode is essentially ungoogleable and only has 463 last.fm listeners at the time I write this. <a href="https://www.youtube.com/watch?v=Nb_-QK9wPas">Det gjør någe me meg</a> is worth a listen.</p>
+
+<p>I believe those last two artists were recommendations from <a href="http://www.last.fm/music/Youth+Pictures+of+Florence+Henderson">Youth Pictures of Florence Henderson</a> who I continue to love like no other.</p>
+
+<p>Album of the year for me is a toss-up between Prawn&rsquo;s <a href="http://topshelfrecords.bandcamp.com/album/kingfisher">Kingfisher</a> and The Hotelier&rsquo;s <a href="http://thehotelyear.bandcamp.com/album/home-like-noplace-is-there">Home, Like Noplace Is There</a>. Both are stellar and you should frankly drop whatever you&rsquo;re doing and listen to both of them right now. I&rsquo;ll wait.</p>
+
+<h2>Reading</h2>
+
+<p>For the second year in a row, I set and completed a goal of reading fifty books for the <a href="https://www.goodreads.com/challenges/1914-2014-reading-challenge">Goodreads Reading Challenge</a>. Despite reading 68 books last year, I just barely finished 50 this year. The average page count per book was 430. <a href="https://www.goodreads.com/user_challenges/1225227">Looking at the books I read</a>, you see mostly Sci-fi and Fantasy with a few nonfiction books thrown in.</p>
+
+<p>Brandon Sanderson continues to rock my world with his <a href="https://www.goodreads.com/book/show/7235533-the-way-of-kings">The Way of Kings</a> and the sequel accounting for 2k+ pages of goodness. Scott Lynch&rsquo;s <a href="https://www.goodreads.com/book/show/127455.The_Lies_of_Locke_Lamora">Gentleman Bastard</a> books were fun heist stories with lovable rogues. The strangest but most loved book was Catherynne M. Valente&rsquo;s <a href="https://www.goodreads.com/book/show/12887497-silently-and-very-fast">Silently and Very Fast</a> which tells the story of the life of a budding AI through dreamy fairytale symbolism. It certainly isn&rsquo;t for everyone, but I found it to be an important read.</p>
+
+<p>Next year, I actually plan to read less with an eye towards diversifying my hobbies. I&rsquo;ll probably set a goal of 30 books. Additionally, I&rsquo;d like that to include more technical writing.</p>
+
+<h2>Hobbies</h2>
+
+<p>This year reading was essentially my only hobby besides playing with my son Trey (10). In addition to playing in the park and such, we spent entirely too much time playing video games together. Favorites from this year include <a href="http://www.awesomenauts.com/">Awesomenauts</a> and adventure games like <a href="http://en.wikipedia.org/wiki/Day_of_the_Tentacle">Day of the Tentacle</a>, <a href="http://www.gog.com/game/deponia">Deponia</a>, and <a href="http://www.gog.com/game/the_ballads_of_reemus_when_the_bed_bites">Ballads of Reemus</a>. Trey also played his first FPS, <a href="http://www.gog.com/game/tower_of_guns">Tower of Guns</a>, and did wonderfully.</p>
+
+<p>Next year I&rsquo;d like to do more toying around with small-electronics (Arduino, etc.) and get Trey involved. I&rsquo;d also like to engage in more physically active hobbies with my son (perhaps rock-climbing?). I&rsquo;ll keep playing adeventure/puzzle games with him, though, since they&rsquo;re good bonding time.</p>
+
+<h2>Family</h2>
+
+<p>I had a daughter this year in May. She&rsquo;s amazing. Trey has been a great big-brother and Julia continues to be an excellent mother. I&rsquo;m a lucky man.</p>
+
+<p>Nothing is more important than family. Next year I&rsquo;ll be asking myself how I can spend more quality time with them.</p>
+
+<h2>Current status: Still not rich.</h2>
+
+<p>For this year&rsquo;s wild attempt at financial freedom I spent a lot of time trying to learn game development. <a href="http://unity3d.com/">Unity</a> is interesting but scaling 2d assets are still a giant pain and I realized I don&rsquo;t have the talent or free-time to be a one-man game studio. Go figure, right? Maybe if I quit my job and doubled-down on it&hellip; but that&rsquo;s just not realistic or what I want right now.</p>
+
+<p>For next year&rsquo;s wild attempt, I&rsquo;d really like to get some sort of SASS going as a side-project. If I&rsquo;ve learned anything working at HubSpot, it is how the economics of SASS are compelling and how having customers giving you money every month is both freeing and empowering. Even if this attempt fails dramatically, there&rsquo;s plenty to learn here.</p>
+
+<h2>Onward</h2>
+
+<p>I have a great job, great friends, and a great family. Alright, 2015, let&rsquo;s do this.</p>
+]]></content>
+  </entry>
+  
+</feed>

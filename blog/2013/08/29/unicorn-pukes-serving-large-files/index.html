@@ -1,0 +1,222 @@
+
+<!DOCTYPE HTML>
+<html>
+<head>
+	<script data-cfasync="false" type="text/javascript" src="//use.typekit.net/axj3cfp.js"></script>
+	<script data-cfasync="false" type="text/javascript">try{Typekit.load();}catch(e){}</script>
+	<meta charset="utf-8">
+	<title>Unicorn Pukes Serving Large Files  | semantic art</title>
+
+<meta name="author" content="Jeffrey Chupp"> 
+
+<meta name="description" content="personal weblog of jeffrey chupp"> <meta name="keywords" content="">
+
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+	<link href="/atom.xml" rel="alternate" title="semantic art" type="application/atom+xml">
+	<link rel="canonical" href="">
+	<link href="/favicon.png" rel="shortcut icon">
+	<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+	<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" type="text/css" media="screen" />
+<script type="text/javascript" src="/fancybox/jquery.fancybox.pack.js"></script>
+
+<script language="Javascript" type="text/javascript">
+$(document).ready(
+  function() {
+    (function($) {
+      $(".fancybox[data-content-id]").each(function() {
+        this.href = $(this).data('content-id');
+      });
+      $(".fancybox").fancybox({
+        beforeLoad: function() {
+          var el, 
+              id = $(this.element).data('title-id');
+
+          if (id) {
+            el = $('#' + id);
+
+            if (el.length) {
+              this.title = el.html();
+            }
+          }
+          if ($(this).data('content')) {
+            this.content = $(this).data('content');
+          }
+        },
+        helpers: {
+          title: {
+            type: 'inside'
+          }
+        }
+      });
+    })(jQuery);
+  }
+);
+</script>
+	
+</head>
+
+
+<body>
+	<header id="header" class="inner"><h1><a href="/">semantic art</a></h1>
+<h4>code should say something</h4>
+<nav id="main-nav"><ul>
+	<li><a href="/">Blog</a></li>
+	<li><a href="/archives">Archive</a></li>
+</ul>
+</nav>
+<nav id="mobile-nav">
+	<div class="alignleft menu">
+		<a class="button">Menu</a>
+		<div class="container"><ul>
+	<li><a href="/">Blog</a></li>
+	<li><a href="/archives">Archive</a></li>
+</ul>
+</div>
+	</div>
+	<div class="alignright search">
+		<a class="button"></a>
+		<div class="container">
+			<form action="http://google.com/search" method="get">
+				<input type="text" name="q" results="0">
+				<input type="hidden" name="q" value="site:blog.semanticart.com/blog">
+			</form>
+		</div>
+	</div>
+</nav>
+
+
+</header>
+
+	<div id="content" class="inner"><article class="post">
+	<h2 class="title">Unicorn Pukes Serving Large Files</h2>
+	<div class="entry-content"><p>Earlier today I was getting this weird <a href="http://unicorn.bogomips.org/">unicorn</a> error on heroku when trying to serve a retina-sized image.</p>
+
+<pre><code>ERROR -- : app error: undefined method `each' for nil:NilClass (NoMethodError)
+ERROR -- : [..]/unicorn-4.6.3/lib/unicorn/http_response.rb:60:in `http_response_write'
+ERROR -- : [..]/unicorn-4.6.3/lib/unicorn/http_server.rb:563:in `process_client'
+ERROR -- : [..]/unicorn-4.6.3/lib/unicorn/http_server.rb:633:in `worker_loop'
+ERROR -- : [..]/unicorn-4.6.3/lib/unicorn/http_server.rb:500:in `spawn_missing_workers'
+ERROR -- : [..]/unicorn-4.6.3/lib/unicorn/http_server.rb:142:in `start'
+ERROR -- : [..]/unicorn-4.6.3/bin/unicorn_rails:209:in `&lt;top (required)&gt;'
+</code></pre>
+
+<p>Weird, right?  But sure enough, whenever I tried to view some-image@2x.png, everything went terribly wrong.</p>
+
+<p>Googling took too long to find an answer, so I&rsquo;m sharing my solution here in hopes that it helps someone else (oh, hai, google bot).</p>
+
+<p>The issue is actually a bug in the version of rack-cache required by actionpack in Rails 3.2.14. Attempting to serve files larger than 1mb causes this error.</p>
+
+<p>It has been <a href="https://github.com/rtomayko/rack-cache/issues/42">fixed</a>, but I had to require the master branch for rack-cache to resolve the problem.</p>
+
+<figure class='code'><figcaption><span>Gemfile</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">gem</span> <span class="s2">&quot;rack-cache&quot;</span><span class="p">,</span> <span class="ss">github</span><span class="p">:</span> <span class="s2">&quot;rtomayko/rack-cache&quot;</span>
+</span><span class='line'><span class="n">gem</span> <span class="s2">&quot;unicorn&quot;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>No more error.</p>
+
+<p>Now, the real solution is to not serve large images through unicorn on heroku. But hooking up a CDN is another problem for another time.</p>
+</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-08-29T13:46:00-05:00" pubdate data-updated="true">Aug 29<span>th</span>, 2013</time></div>
+	
+
+<div class="tags">
+
+	<a class='category' href='/blog/categories/rails/'>rails</a>, <a class='category' href='/blog/categories/ruby/'>ruby</a>, <a class='category' href='/blog/categories/unicorn/'>unicorn</a>
+
+</div>
+
+
+	
+</div></article>
+
+	<div class="share">
+	<div class="addthis_toolbox addthis_default_style ">
+	
+	
+	<a class="addthis_button_tweet"></a>
+	
+	
+<!---	<a class="addthis_counter addthis_pill_style"></a> --->
+	</div>
+  <script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#pubid="></script>
+</div>
+
+
+
+<section id="comment">
+    <h2 class="title">Comments</h2>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+</section>
+</div>
+	<footer id="footer" class="inner">Copyright &copy; 2014
+
+    Jeffrey Chupp
+
+<br>
+Powered by Octopress.
+</footer>
+	<script src="/javascripts/slash.js"></script>
+<script src="/javascripts/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+	$('.fancybox').fancybox();
+})(jQuery);
+</script> <!-- Delete or comment this line to disable Fancybox -->
+
+
+<script type="text/javascript">
+      var disqus_shortname = 'semanticart';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://blog.semanticart.com/blog/blog/2013/08/29/unicorn-pukes-serving-large-files/';
+        var disqus_url = 'http://blog.semanticart.com/blog/blog/2013/08/29/unicorn-pukes-serving-large-files/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+	<script type="text/javascript">
+		var _gaq = _gaq || [];
+		_gaq.push(['_setAccount', 'UA-35446138-1']);
+		_gaq.push(['_trackPageview']);
+
+		(function() {
+			var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+			ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+			var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+		})();
+	</script>
+
+
+
+</body>
+</html>

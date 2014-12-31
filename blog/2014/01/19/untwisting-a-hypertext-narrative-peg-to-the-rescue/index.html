@@ -1,0 +1,599 @@
+
+<!DOCTYPE HTML>
+<html>
+<head>
+	<script data-cfasync="false" type="text/javascript" src="//use.typekit.net/axj3cfp.js"></script>
+	<script data-cfasync="false" type="text/javascript">try{Typekit.load();}catch(e){}</script>
+	<meta charset="utf-8">
+	<title>Untwisting a Hypertext Narrative - PEG to the Rescue!  | semantic art</title>
+
+<meta name="author" content="Jeffrey Chupp"> 
+
+<meta name="description" content="personal weblog of jeffrey chupp"> <meta name="keywords" content="">
+
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+	<link href="/atom.xml" rel="alternate" title="semantic art" type="application/atom+xml">
+	<link rel="canonical" href="">
+	<link href="/favicon.png" rel="shortcut icon">
+	<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+	<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" type="text/css" media="screen" />
+<script type="text/javascript" src="/fancybox/jquery.fancybox.pack.js"></script>
+
+<script language="Javascript" type="text/javascript">
+$(document).ready(
+  function() {
+    (function($) {
+      $(".fancybox[data-content-id]").each(function() {
+        this.href = $(this).data('content-id');
+      });
+      $(".fancybox").fancybox({
+        beforeLoad: function() {
+          var el, 
+              id = $(this.element).data('title-id');
+
+          if (id) {
+            el = $('#' + id);
+
+            if (el.length) {
+              this.title = el.html();
+            }
+          }
+          if ($(this).data('content')) {
+            this.content = $(this).data('content');
+          }
+        },
+        helpers: {
+          title: {
+            type: 'inside'
+          }
+        }
+      });
+    })(jQuery);
+  }
+);
+</script>
+	
+</head>
+
+
+<body>
+	<header id="header" class="inner"><h1><a href="/">semantic art</a></h1>
+<h4>code should say something</h4>
+<nav id="main-nav"><ul>
+	<li><a href="/">Blog</a></li>
+	<li><a href="/archives">Archive</a></li>
+</ul>
+</nav>
+<nav id="mobile-nav">
+	<div class="alignleft menu">
+		<a class="button">Menu</a>
+		<div class="container"><ul>
+	<li><a href="/">Blog</a></li>
+	<li><a href="/archives">Archive</a></li>
+</ul>
+</div>
+	</div>
+	<div class="alignright search">
+		<a class="button"></a>
+		<div class="container">
+			<form action="http://google.com/search" method="get">
+				<input type="text" name="q" results="0">
+				<input type="hidden" name="q" value="site:blog.semanticart.com/blog">
+			</form>
+		</div>
+	</div>
+</nav>
+
+
+</header>
+
+	<div id="content" class="inner"><article class="post">
+	<h2 class="title">Untwisting a Hypertext Narrative - PEG to the Rescue!</h2>
+	<div class="entry-content"><p>In this post you&rsquo;ll learn why I think Parsing Expression Grammars are awesome and see an example of how I built one to scratch an itch.</p>
+
+<h2>The Itch</h2>
+
+<p>After spending some time <a href="http://blog.semanticart.com/blog/2014/01/11/writing-hypertext-fiction-in-markdown/">writing Choose Your Own Adventure-style books in markdown</a>, I quickly realized there were some tools missing that could greatly improve the writing process. A few missing items were:</p>
+
+<ol>
+<li>Knowing if there are any unreachable sections that have been orphaned in the writing process.</li>
+<li>Being able to see all the branches within a book.</li>
+<li>Knowing each branch is coherent by having an easy way to read through them.</li>
+</ol>
+
+
+<p>&ldquo;Never fear,&rdquo; I say to myself, &ldquo;I can just write some code to parse the markdown files and pluck out the paths. This will be easy.&rdquo;</p>
+
+<p>As a quick reminder, the format for a single section looks something like this:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'># Something isn't right here. {#intro}
+</span><span class='line'>
+</span><span class='line'>You hear a phone ringing.
+</span><span class='line'>
+</span><span class='line'>- [pick up phone](#phone)
+</span><span class='line'>- [do not answer](#ignore-phone)
+</span><span class='line'>- [set yourself on fire](#fire)</span></code></pre></td></tr></table></div></figure>
+
+
+<p>(Headers specify new sections starting and have some anchor. Links direct you to new sections.)</p>
+
+<p>There are plenty of ways to slurp in a story file and parse it. You could write a naive line-by-line loop that breaks it into sections based on the presence of a header and then parse the links within sections with substring matching. You could write some complicated regular expression because <a href="http://stackoverflow.com/a/1732454">we all know how much fun regular expressions can become</a>. Or you could do something saner like write a <a href="https://en.wikipedia.org/wiki/Parsing_expression_grammar">parsing expression grammar</a> (hereafter PEG).</p>
+
+<h2>Why a PEG?</h2>
+
+<p>Generally, a regex makes for a beautiful collection of cryptic ascii art that you&rsquo;ll either comment-to-death or be confused by when you stumble across it weeks or months later. PEGs take a different approach and instead seek define <a href="https://en.wikipedia.org/wiki/Parsing_expression_grammar">&ldquo;a formal language in terms of a set of rules for recognizing strings in the language.&rdquo;</a> Because they&rsquo;re a set of rules, you can slowly TDD your way up from parsing a single phrase to parsing an entire document (or at least the parts you care about).</p>
+
+<p>(It is worth mentioning that because the format here is pretty trivial, either the naive line-by-line solution or a regex is fine. PEGs are without a doubt the right choice IMHO for complicated grammars.)</p>
+
+<h2>Show me some code</h2>
+
+<p>We&rsquo;ll be using <a href="http://kschiess.github.io/parslet/">Parslet</a> to write our PEG. Parslet provides a succinct syntax and exponentially better error messages than other competing ruby PEGs (<code>parse_with_debug</code> is my friend). My biggest complaint about Parslet is that the documentation was occasionally lacking, but it only slowed things down a bit &ndash; and there&rsquo;s an <a href="http://kschiess.github.io/parslet/contribute.html">IRC channel and mailing list</a>.</p>
+
+<p>Let&rsquo;s start off simple, just parsing the links out of a single section of markdown. Being a TDD&#8217;er, we&rsquo;ll write a few simple tests first (in MiniTest::Spec):</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">describe</span> <span class="no">LinkParser</span> <span class="k">do</span>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">parse</span><span class="p">(</span><span class="n">input</span><span class="p">)</span>
+</span><span class='line'>    <span class="no">LinkParser</span><span class="o">.</span><span class="n">new</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">input</span><span class="p">)</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">it</span> <span class="s2">&quot;can match a single link&quot;</span> <span class="k">do</span>
+</span><span class='line'>    <span class="n">parsed</span> <span class="o">=</span> <span class="n">parse</span><span class="p">(</span><span class="s2">&quot;[some link name](#some-href)&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">first</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">assert_equal</span> <span class="s2">&quot;some-href&quot;</span><span class="p">,</span>
+</span><span class='line'>      <span class="n">parsed</span><span class="o">[</span><span class="ss">:id</span><span class="o">]</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">it</span> <span class="s2">&quot;can match a single link surrounded by content&quot;</span> <span class="k">do</span>
+</span><span class='line'>    <span class="n">parsed</span> <span class="o">=</span> <span class="n">parse</span><span class="p">(</span><span class="s2">&quot;</span>
+</span><span class='line'><span class="s2">      hey there [some link name](#some-href)</span>
+</span><span class='line'><span class="s2">      some content</span>
+</span><span class='line'><span class="s2">    &quot;</span><span class="p">)</span><span class="o">.</span><span class="n">first</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">assert_equal</span> <span class="s2">&quot;some-href&quot;</span><span class="p">,</span>
+</span><span class='line'>      <span class="n">parsed</span><span class="o">[</span><span class="ss">:id</span><span class="o">]</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">it</span> <span class="s2">&quot;can match a multiple links surrounded by content&quot;</span> <span class="k">do</span>
+</span><span class='line'>    <span class="n">parsed</span> <span class="o">=</span> <span class="n">parse</span><span class="p">(</span><span class="s2">&quot;</span>
+</span><span class='line'><span class="s2">      hey there [some link name](#some-href)</span>
+</span><span class='line'><span class="s2">      some content with a link [another](#new-href) and [another still](#last) ok?</span>
+</span><span class='line'><span class="s2">    &quot;</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">assert_equal</span> <span class="o">[</span><span class="s2">&quot;some-href&quot;</span><span class="p">,</span> <span class="s2">&quot;new-href&quot;</span><span class="p">,</span> <span class="s2">&quot;last&quot;</span><span class="o">]</span><span class="p">,</span>
+</span><span class='line'>      <span class="n">parsed</span><span class="o">.</span><span class="n">map</span><span class="p">{</span><span class="o">|</span><span class="n">s</span><span class="o">|</span> <span class="n">s</span><span class="o">[</span><span class="ss">:id</span><span class="o">].</span><span class="n">to_s</span><span class="p">}</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>And the working implementation of LinkParser:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">LinkParser</span> <span class="o">&lt;</span> <span class="ss">Parslet</span><span class="p">:</span><span class="ss">:Parser</span>
+</span><span class='line'>  <span class="n">rule</span><span class="p">(</span><span class="ss">:link_text</span><span class="p">)</span> <span class="p">{</span> <span class="n">str</span><span class="p">(</span><span class="s2">&quot;[&quot;</span><span class="p">)</span> <span class="o">&gt;&gt;</span> <span class="p">(</span><span class="n">str</span><span class="p">(</span><span class="s1">&#39;]&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">absent?</span> <span class="o">&gt;&gt;</span> <span class="n">any</span><span class="p">)</span><span class="o">.</span><span class="n">repeat</span> <span class="o">&gt;&gt;</span> <span class="n">str</span><span class="p">(</span><span class="s1">&#39;]&#39;</span><span class="p">)</span> <span class="p">}</span>
+</span><span class='line'>  <span class="n">rule</span><span class="p">(</span><span class="ss">:link_href</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>      <span class="n">str</span><span class="p">(</span><span class="s1">&#39;(#&#39;</span><span class="p">)</span> <span class="o">&gt;&gt;</span> <span class="p">(</span><span class="n">str</span><span class="p">(</span><span class="s1">&#39;)&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">absent?</span> <span class="o">&gt;&gt;</span> <span class="n">any</span><span class="p">)</span><span class="o">.</span><span class="n">repeat</span><span class="o">.</span><span class="n">as</span><span class="p">(</span><span class="ss">:id</span><span class="p">)</span> <span class="o">&gt;&gt;</span> <span class="n">str</span><span class="p">(</span><span class="s1">&#39;)&#39;</span><span class="p">)</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'>  <span class="n">rule</span><span class="p">(</span><span class="ss">:link</span><span class="p">)</span>      <span class="p">{</span> <span class="n">link_text</span> <span class="o">&gt;&gt;</span> <span class="n">link_href</span> <span class="p">}</span>
+</span><span class='line'>  <span class="n">rule</span><span class="p">(</span><span class="ss">:non_link</span><span class="p">)</span>  <span class="p">{</span> <span class="p">(</span><span class="n">link</span><span class="o">.</span><span class="n">absent?</span> <span class="o">&gt;&gt;</span> <span class="n">any</span><span class="p">)</span><span class="o">.</span><span class="n">repeat</span> <span class="p">}</span>
+</span><span class='line'>  <span class="n">rule</span><span class="p">(</span><span class="ss">:content</span><span class="p">)</span>   <span class="p">{</span> <span class="p">(</span><span class="n">non_link</span> <span class="o">&gt;&gt;</span> <span class="n">link</span> <span class="o">&gt;&gt;</span> <span class="n">non_link</span><span class="p">)</span><span class="o">.</span><span class="n">repeat</span> <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">root</span><span class="p">(</span><span class="ss">:content</span><span class="p">)</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>&ldquo;Foul,&rdquo; you cry, &ldquo;this is much more complicated than a regular expression!&rdquo; And I reply &ldquo;Yes, but it is also more intelligible long-term as you build upon it.&rdquo; You don&rsquo;t look completely satisfied, but you&rsquo;ll continue reading.</p>
+
+<p>It is worth noting that everything has a name:</p>
+
+<ul>
+<li>link_text encompasses everything between the two brackets in the markdown link.</li>
+<li>link_href is the content within the parens. Because we are specifically linking only to anchors, we also include the # and then we&rsquo;ll name the id we&rsquo;re linking to via <code>as</code>.</li>
+<li>link is just link_text + link_href</li>
+<li>non_link is anything that isn&rsquo;t a link. It could be other markdown or plain text. It may or may not actually contain any characters at all.</li>
+<li>content is the whole markdown content. We can see it is made up of some number of the following: non_link + link + non_link</li>
+</ul>
+
+
+<p>We&rsquo;ve specified that &ldquo;content&rdquo; is our root so the parser starts there.</p>
+
+<h2>The Scratch: Adding the 3 missing features</h2>
+
+<p>Now we have an easy way to extract links from sections within a story. We&rsquo;ll be able to leverage this to map the branches and solve all three problems.</p>
+
+<p>But in order to break the larger story into sections we&rsquo;ll need to write a StoryParser which can parse an entire story file (for an example file, see <a href="http://blog.semanticart.com/blog/2014/01/11/writing-hypertext-fiction-in-markdown/">the previous post</a>). Again, this <a href="https://github.com/semanticart/cyoa-parser/blob/master/spec/story_parser_spec.rb">was TDD&#8217;ed</a>, but we&rsquo;ll cut to the chase:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">StoryParser</span> <span class="o">&lt;</span> <span class="ss">Parslet</span><span class="p">:</span><span class="ss">:Parser</span>
+</span><span class='line'>  <span class="n">rule</span><span class="p">(</span><span class="ss">:space</span><span class="p">)</span> <span class="p">{</span> <span class="n">match</span><span class="p">(</span><span class="s1">&#39;\s&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">repeat</span> <span class="p">}</span>
+</span><span class='line'>  <span class="n">rule</span><span class="p">(</span><span class="ss">:newline</span><span class="p">)</span> <span class="p">{</span> <span class="n">match</span><span class="p">(</span><span class="s1">&#39;\n&#39;</span><span class="p">)</span> <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">rule</span><span class="p">(</span><span class="ss">:heading</span><span class="p">)</span> <span class="p">{</span> <span class="n">match</span><span class="p">(</span><span class="s1">&#39;^#&#39;</span><span class="p">)</span> <span class="o">&gt;&gt;</span> <span class="n">space</span><span class="o">.</span><span class="n">maybe</span> <span class="o">&gt;&gt;</span> <span class="p">(</span><span class="n">match</span><span class="o">[</span><span class="s1">&#39;\n{&#39;</span><span class="o">].</span><span class="n">absent?</span> <span class="o">&gt;&gt;</span> <span class="n">any</span><span class="p">)</span><span class="o">.</span><span class="n">repeat</span><span class="o">.</span><span class="n">as</span><span class="p">(</span><span class="ss">:heading</span><span class="p">)</span> <span class="o">&gt;&gt;</span> <span class="nb">id</span><span class="o">.</span><span class="n">maybe</span> <span class="p">}</span>
+</span><span class='line'>  <span class="n">rule</span><span class="p">(</span><span class="ss">:id</span><span class="p">)</span>      <span class="p">{</span> <span class="n">str</span><span class="p">(</span><span class="s1">&#39;{#&#39;</span><span class="p">)</span> <span class="o">&gt;&gt;</span> <span class="p">(</span><span class="n">str</span><span class="p">(</span><span class="s1">&#39;}&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">absent?</span> <span class="o">&gt;&gt;</span> <span class="n">any</span><span class="p">)</span><span class="o">.</span><span class="n">repeat</span><span class="o">.</span><span class="n">as</span><span class="p">(</span><span class="ss">:id</span><span class="p">)</span> <span class="o">&gt;&gt;</span> <span class="n">str</span><span class="p">(</span><span class="s1">&#39;}&#39;</span><span class="p">)</span> <span class="p">}</span>
+</span><span class='line'>  <span class="n">rule</span><span class="p">(</span><span class="ss">:content</span><span class="p">)</span> <span class="p">{</span> <span class="p">((</span><span class="nb">id</span> <span class="o">|</span> <span class="n">heading</span><span class="p">)</span><span class="o">.</span><span class="n">absent?</span> <span class="o">&gt;&gt;</span> <span class="n">any</span><span class="p">)</span><span class="o">.</span><span class="n">repeat</span> <span class="p">}</span>
+</span><span class='line'>  <span class="n">rule</span><span class="p">(</span><span class="ss">:section</span><span class="p">)</span> <span class="p">{</span> <span class="p">(</span><span class="n">heading</span> <span class="o">&gt;&gt;</span> <span class="n">space</span><span class="o">.</span><span class="n">maybe</span> <span class="o">&gt;&gt;</span> <span class="n">content</span><span class="o">.</span><span class="n">as</span><span class="p">(</span><span class="ss">:content</span><span class="p">)</span> <span class="o">&gt;&gt;</span> <span class="n">space</span><span class="o">.</span><span class="n">maybe</span><span class="p">)</span><span class="o">.</span><span class="n">as</span><span class="p">(</span><span class="ss">:section</span><span class="p">)</span> <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">rule</span><span class="p">(</span><span class="ss">:tile_block</span><span class="p">)</span> <span class="p">{</span> <span class="p">(</span><span class="n">str</span><span class="p">(</span><span class="s1">&#39;%&#39;</span><span class="p">)</span> <span class="o">&gt;&gt;</span> <span class="p">(</span><span class="n">newline</span><span class="o">.</span><span class="n">absent?</span> <span class="o">&gt;&gt;</span> <span class="n">any</span><span class="p">)</span><span class="o">.</span><span class="n">repeat</span> <span class="o">&gt;&gt;</span> <span class="n">newline</span><span class="p">)</span><span class="o">.</span><span class="n">repeat</span> <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">rule</span><span class="p">(</span><span class="ss">:story</span><span class="p">)</span> <span class="p">{</span> <span class="n">space</span><span class="o">.</span><span class="n">maybe</span> <span class="o">&gt;&gt;</span> <span class="n">tile_block</span><span class="o">.</span><span class="n">maybe</span> <span class="o">&gt;&gt;</span> <span class="n">space</span><span class="o">.</span><span class="n">maybe</span> <span class="o">&gt;&gt;</span> <span class="n">section</span><span class="o">.</span><span class="n">repeat</span> <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">root</span><span class="p">(</span><span class="ss">:story</span><span class="p">)</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Now we can parse out each section&rsquo;s heading text, id, and content into a tree that looks something like this:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="o">[</span>
+</span><span class='line'>  <span class="p">{</span><span class="ss">:section</span><span class="o">=&gt;</span><span class="p">{</span>
+</span><span class='line'>    <span class="ss">:heading</span><span class="o">=&gt;</span><span class="s2">&quot;Something isn&#39;t right here. &quot;</span><span class="err">@</span><span class="mi">51</span><span class="p">,</span>
+</span><span class='line'>    <span class="ss">:id</span><span class="o">=&gt;</span><span class="s2">&quot;intro&quot;</span><span class="err">@</span><span class="mi">81</span><span class="p">,</span>
+</span><span class='line'>    <span class="ss">:content</span><span class="o">=&gt;</span><span class="s2">&quot;You hear a phone ringing.</span><span class="se">\n\n</span><span class="s2">- [pick up phone](#phone)...&quot;</span><span class="err">@</span><span class="mi">89</span><span class="p">}</span>
+</span><span class='line'>  <span class="p">},</span>
+</span><span class='line'>  <span class="p">{</span><span class="ss">:section</span><span class="o">=&gt;</span><span class="p">{</span>
+</span><span class='line'>    <span class="ss">:heading</span><span class="o">=&gt;</span><span class="s2">&quot;You pick up the phone... &quot;</span><span class="err">@</span><span class="mi">210</span><span class="p">,</span>
+</span><span class='line'>    <span class="ss">:id</span><span class="o">=&gt;</span><span class="s2">&quot;phone&quot;</span><span class="err">@</span><span class="mi">237</span><span class="p">,</span>
+</span><span class='line'>    <span class="ss">:content</span><span class="o">=&gt;</span><span class="s2">&quot;It is your grandmother. You die.</span><span class="se">\n\n</span><span class="s2">- [start over](#intro)&quot;</span><span class="err">@</span><span class="mi">245</span><span class="p">}</span>
+</span><span class='line'>  <span class="p">},</span>
+</span><span class='line'>  <span class="o">.</span><span class="n">.</span><span class="o">.</span>
+</span><span class='line'><span class="o">]</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>&ldquo;That&rsquo;s well and good,&rdquo; you say, &ldquo;but how do we turn that into something useful?&rdquo;</p>
+
+<p>Enter Parslet&rsquo;s Transform class (and exit your remaining skepticism). <a href="http://kschiess.github.io/parslet/transform.html">Parslet::Transform</a> takes a tree and lets you convert it into whatever you want. The following code takes a section tree from above, cleans up some whitespace, and then returns an instantiated Section class based on the input.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">SectionTransformer</span> <span class="o">&lt;</span> <span class="ss">Parslet</span><span class="p">:</span><span class="ss">:Transform</span>
+</span><span class='line'>  <span class="n">rule</span><span class="p">(</span><span class="ss">section</span><span class="p">:</span> <span class="n">subtree</span><span class="p">(</span><span class="ss">:hash</span><span class="p">))</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nb">hash</span><span class="o">[</span><span class="ss">:content</span><span class="o">]</span> <span class="o">=</span> <span class="nb">hash</span><span class="o">[</span><span class="ss">:content</span><span class="o">].</span><span class="n">to_s</span><span class="o">.</span><span class="n">strip</span>
+</span><span class='line'>    <span class="nb">hash</span><span class="o">[</span><span class="ss">:heading</span><span class="o">]</span> <span class="o">=</span> <span class="nb">hash</span><span class="o">[</span><span class="ss">:heading</span><span class="o">].</span><span class="n">to_s</span><span class="o">.</span><span class="n">strip</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">if</span> <span class="nb">hash</span><span class="o">[</span><span class="ss">:id</span><span class="o">].</span><span class="n">to_s</span><span class="o">.</span><span class="n">empty?</span>
+</span><span class='line'>      <span class="nb">hash</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="ss">:id</span><span class="p">)</span>
+</span><span class='line'>    <span class="k">else</span>
+</span><span class='line'>      <span class="nb">hash</span><span class="o">[</span><span class="ss">:id</span><span class="o">]</span> <span class="o">=</span> <span class="nb">hash</span><span class="o">[</span><span class="ss">:id</span><span class="o">].</span><span class="n">to_s</span>
+</span><span class='line'>    <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="no">Section</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="nb">hash</span><span class="p">)</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Example of an instantiated <a href="https://github.com/semanticart/cyoa-parser/blob/master/lib/section.rb">Section</a>:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="nb">p</span> <span class="no">SectionTransformer</span><span class="o">.</span><span class="n">new</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">tree</span><span class="o">[</span><span class="mi">0</span><span class="o">]</span><span class="p">)</span>
+</span><span class='line'><span class="c1"># &lt;Section:0x007fd6e5853298</span>
+</span><span class='line'><span class="c1">#  @content=&quot;You hear a phone ringing.\n\n- [pick up phone](#phone)\n- [do not answer](#ignore-phone)\n- [set yourself on fire](#fire)&quot;,</span>
+</span><span class='line'><span class="c1">#  @heading=&quot;Something isn&#39;t right here.&quot;,</span>
+</span><span class='line'><span class="c1">#  @id=&quot;intro&quot;,</span>
+</span><span class='line'><span class="c1">#  @links=[&quot;phone&quot;, &quot;ignore-phone&quot;, &quot;fire&quot;]&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>So now we have the building blocks for parsing a story into sections and then our Section class internally uses the LinkParser from above to determine where the section branches outward.</p>
+
+<p>Let&rsquo;s finish this by encapsulating the entire story in a Story class:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">Story</span>
+</span><span class='line'>  <span class="kp">attr_reader</span> <span class="ss">:sections</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
+</span><span class='line'>    <span class="vi">@sections</span> <span class="o">=</span> <span class="n">parse_file</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">branches</span>
+</span><span class='line'>    <span class="vi">@_branches</span> <span class="o">||=</span> <span class="no">BranchCruncher</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="vi">@sections</span><span class="p">)</span><span class="o">.</span><span class="n">traverse</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">reachable</span>
+</span><span class='line'>    <span class="n">branches</span><span class="o">.</span><span class="n">flatten</span><span class="o">.</span><span class="n">uniq</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">unreachable</span>
+</span><span class='line'>    <span class="vi">@sections</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="o">&amp;</span><span class="ss">:id</span><span class="p">)</span> <span class="o">-</span> <span class="n">reachable</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">split!</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+</span><span class='line'>    <span class="n">branches</span><span class="o">.</span><span class="n">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">branch</span><span class="o">|</span>
+</span><span class='line'>      <span class="no">File</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">path</span> <span class="o">+</span> <span class="n">branch</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s1">&#39;-&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;.md&#39;</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">f</span><span class="o">|</span>
+</span><span class='line'>        <span class="n">branch</span><span class="o">.</span><span class="n">each</span> <span class="k">do</span> <span class="o">|</span><span class="nb">id</span><span class="o">|</span>
+</span><span class='line'>          <span class="n">section</span> <span class="o">=</span> <span class="n">sections</span><span class="o">.</span><span class="n">detect</span><span class="p">{</span><span class="o">|</span><span class="n">s</span><span class="o">|</span> <span class="n">s</span><span class="o">.</span><span class="n">id</span> <span class="o">==</span> <span class="nb">id</span><span class="p">}</span>
+</span><span class='line'>          <span class="n">f</span><span class="o">.</span><span class="n">puts</span> <span class="s2">&quot;# </span><span class="si">#{</span><span class="n">section</span><span class="o">.</span><span class="n">heading</span><span class="si">}</span><span class="s2"> {#</span><span class="si">#{</span><span class="n">section</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s2">}</span><span class="se">\n</span><span class="s2">&quot;</span>
+</span><span class='line'>          <span class="n">f</span><span class="o">.</span><span class="n">puts</span> <span class="n">section</span><span class="o">.</span><span class="n">content</span>
+</span><span class='line'>          <span class="n">f</span><span class="o">.</span><span class="n">puts</span> <span class="s2">&quot;</span><span class="se">\n\n</span><span class="s2">&quot;</span>
+</span><span class='line'>        <span class="k">end</span>
+</span><span class='line'>      <span class="k">end</span>
+</span><span class='line'>    <span class="k">end</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="kp">private</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">parse_file</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
+</span><span class='line'>    <span class="no">SectionTransformer</span><span class="o">.</span><span class="n">new</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="no">StoryParser</span><span class="o">.</span><span class="n">new</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">file</span><span class="o">.</span><span class="n">read</span><span class="p">))</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>A few notes:</p>
+
+<ul>
+<li>You instantiate the Story class with a File object pointing to your story.</li>
+<li>It parses out the sections</li>
+<li>Then you can call methods to fill in the missing pieces of functionality we identified at the beginning of this post.</li>
+</ul>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="c1"># Which sections are orphaned?</span>
+</span><span class='line'><span class="nb">p</span> <span class="n">story</span><span class="o">.</span><span class="n">unreachable</span>
+</span><span class='line'><span class="c1"># =&gt; [&#39;some-unreachable-page-id&#39;]</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1"># What branches are there in the book?</span>
+</span><span class='line'><span class="nb">p</span> <span class="n">story</span><span class="o">.</span><span class="n">branches</span>
+</span><span class='line'><span class="c1"># =&gt; [ [&quot;intro&quot;, &quot;investigate&quot;, &quot;help&quot;], [&quot;intro&quot;, &quot;investigate&quot;, &quot;rescue&quot;, &quot;wake-up&quot;], [&quot;intro&quot;, &quot;investigate&quot;, &quot;grounded&quot;], [&quot;intro&quot;, &quot;grounded&quot;] ]</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1"># Let me read each narrative branch by splitting each branch into files</span>
+</span><span class='line'><span class="n">story</span><span class="o">.</span><span class="n">split!</span><span class="p">(</span><span class="s1">&#39;/tmp/&#39;</span><span class="p">)</span>
+</span><span class='line'><span class="c1"># creates files in /tmp/ folder named for each section in a branch</span>
+</span><span class='line'><span class="c1"># e.g. intro-investigate-help.md</span>
+</span><span class='line'><span class="c1"># You can read through each branch and ensure you&#39;ve maintained a cohesive narrative.</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>If you made it this far, you deserve a cookie and my undying affection. I&rsquo;m all out of cookies and any I had would be gluten-free anyway, so how about I just link you to the example code instead and we call it even?</p>
+
+<p>Here&rsquo;s the <a href="https://github.com/semanticart/cyoa-parser">cyoa-parser on github</a>. It includes a <a href="https://github.com/semanticart/cyoa-parser/blob/master/examples/smell-ya-later.md">hilariously bad speed-story</a> I wrote for my son when he insisted on a CYOA bedtime story 10 minutes before bed.</p>
+
+<p>If you&rsquo;d like to learn more about Parslet from someone who knows it better than me, check out <a href="http://www.confreaks.com/videos/2730-wickedgoodruby-writing-dsl-s-with-parslet">Jason Garber&rsquo;s Wicked Good Ruby talk</a>.</p>
+</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-01-19T13:18:00-06:00" pubdate data-updated="true">Jan 19<span>th</span>, 2014</time></div>
+	
+
+<div class="tags">
+
+	<a class='category' href='/blog/categories/parslet/'>parslet</a>, <a class='category' href='/blog/categories/peg/'>peg</a>, <a class='category' href='/blog/categories/ruby/'>ruby</a>, <a class='category' href='/blog/categories/writing/'>writing</a>
+
+</div>
+
+
+	
+</div></article>
+
+	<div class="share">
+	<div class="addthis_toolbox addthis_default_style ">
+	
+	
+	<a class="addthis_button_tweet"></a>
+	
+	
+<!---	<a class="addthis_counter addthis_pill_style"></a> --->
+	</div>
+  <script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#pubid="></script>
+</div>
+
+
+
+<section id="comment">
+    <h2 class="title">Comments</h2>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+</section>
+</div>
+	<footer id="footer" class="inner">Copyright &copy; 2014
+
+    Jeffrey Chupp
+
+<br>
+Powered by Octopress.
+</footer>
+	<script src="/javascripts/slash.js"></script>
+<script src="/javascripts/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+	$('.fancybox').fancybox();
+})(jQuery);
+</script> <!-- Delete or comment this line to disable Fancybox -->
+
+
+<script type="text/javascript">
+      var disqus_shortname = 'semanticart';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://blog.semanticart.com/blog/blog/2014/01/19/untwisting-a-hypertext-narrative-peg-to-the-rescue/';
+        var disqus_url = 'http://blog.semanticart.com/blog/blog/2014/01/19/untwisting-a-hypertext-narrative-peg-to-the-rescue/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+	<script type="text/javascript">
+		var _gaq = _gaq || [];
+		_gaq.push(['_setAccount', 'UA-35446138-1']);
+		_gaq.push(['_trackPageview']);
+
+		(function() {
+			var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+			ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+			var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+		})();
+	</script>
+
+
+
+</body>
+</html>

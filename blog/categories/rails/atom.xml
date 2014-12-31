@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: rails | semantic art]]></title>
+  <link href="http://blog.semanticart.com/blog/blog/categories/rails/atom.xml" rel="self"/>
+  <link href="http://blog.semanticart.com/blog/"/>
+  <updated>2014-12-31T17:44:38-06:00</updated>
+  <id>http://blog.semanticart.com/blog/</id>
+  <author>
+    <name><![CDATA[Jeffrey Chupp]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[A simple API proxy written in Go]]></title>
+    <link href="http://blog.semanticart.com/blog/blog/2013/09/23/a-simple-api-proxy-written-in-go/"/>
+    <updated>2013-09-23T00:00:00-05:00</updated>
+    <id>http://blog.semanticart.com/blog/blog/2013/09/23/a-simple-api-proxy-written-in-go</id>
+    <content type="html"><![CDATA[<h1>UPATE: see <a href="http://blog.semanticart.com/blog/2013/11/11/a-proper-api-proxy-written-in-go/">&ldquo;A proper API proxy written in Go&rdquo;</a> for a better solution to this problem.</h1>
+
+<h3>The problem:</h3>
+
+<p>Have you ever written a javascript app that needed to consume an API? What if the API requires you to pass your api key along in the query params? How do you hide your key?</p>
+
+<p>This weekend I bumped into this issue once again. I was writing a simple app in angular to consume the last.fm api when it hit me.</p>
+
+<p>This usually leaves me with two options:</p>
+
+<ol>
+<li>Decide my api key isn&rsquo;t worth hiding and just embed it in the javascript.</li>
+<li>Make a call to the app server (I&rsquo;m usually using Rails) that would then make the API call within the request lifecycle and return the json when the API call finishes.</li>
+</ol>
+
+
+<p>Option 1 is also known as &ldquo;giving up&rdquo; &ndash; you don&rsquo;t really want everyone to have your api key, do you? What happens when someone else starts using it to do nefarious things on your behalf or just decides to help you hit your rate limit faster?</p>
+
+<p>Option 2 is safer, but now your poor app server pays the penalty of the API being slow. If the API call takes 3 seconds, your server process/thread is tied up for that time. Lame.</p>
+
+<p>Imagine your rails app is built around an external API. Do you really want to spin up more and more instances to gain concurrency just to protect your key?</p>
+
+<h3>The solution: Move things out-of-band</h3>
+
+<p>For requests that could otherwise hit the api directly, your app server shouldn&rsquo;t pay the penalties of keeping your key secure. So let&rsquo;s move things out-of-band.</p>
+
+<p>I&rsquo;d been meaning to play with <a href="http://golang.org/">Go</a> for some time but never had the right project. The implementation here was fairly simple but needed to be highly concurrent, so this felt like a good fit.</p>
+
+<p>Borrowing from example Go http servers and http consumers, I came up with this:</p>
+
+<p>``` go
+package main</p>
+
+<p>import (</p>
+
+<pre><code>"fmt"
+"io/ioutil"
+"net/http"
+"os"
+</code></pre>
+
+<p>)</p>
+
+<p>func errorOut(err error) {</p>
+
+<pre><code>fmt.Printf("%s", err)
+os.Exit(1)
+</code></pre>
+
+<p>}</p>
+
+<p>func handler(w http.ResponseWriter, r *http.Request) {</p>
+
+<pre><code>w.Header().Set("Access-Control-Allow-Origin", "*")
+w.Header().Set("Access-Control-Allow-Headers", "X-Requested-With")
+
+if r.Method == "GET" {
+    var newUrl string = os.Getenv("URL_ROOT") + r.URL.Path[1:] + "?" +
+    r.URL.RawQuery + os.Getenv("URL_SUFFIX")
+
+    fmt.Printf("fetching %s\n", newUrl)
+
+    response, err := http.Get(newUrl)
+    if err != nil {
+        errorOut(err)
+    } else {
+        defer response.Body.Close()
+        contents, err := ioutil.ReadAll(response.Body)
+        if err != nil {
+            errorOut(err)
+        }
+        fmt.Fprintf(w, "%s\n", contents)
+    }
+}
+</code></pre>
+
+<p>}
+```</p>
+
+<p>The server takes incoming requests and will translate the url by substituting the provided URL_ROOT and appending the URL_SUFFIX (the api key). It fetches that foreign url and then returns the results.</p>
+
+<p>So with the example config:</p>
+
+<pre><code>URL_ROOT=http://ws.audioscrobbler.com/2.0/ URL_SUFFIX=&amp;api_key=XXXXXXXXXXXXX
+</code></pre>
+
+<p>A request to the go server at <a href="http://example.com/?method=user.getrecenttracks&amp;user=violencenow&amp;format=json">http://example.com/?method=user.getrecenttracks&amp;user=violencenow&amp;format=json</a> would return the contents of <a href="http://ws.audioscrobbler.com/2.0/?method=user.getrecenttracks&amp;user=violencenow&amp;format=json&amp;api_key=XXXXXXXXXXXXX">http://ws.audioscrobbler.com/2.0/?method=user.getrecenttracks&amp;user=violencenow&amp;format=json&amp;api_key=XXXXXXXXXXXXX</a></p>
+
+<p>This isn&rsquo;t a solution for everything. Right now it only supports GET requests &ndash; this is probably all you&rsquo;d ever want, lest someone start posting to your endpoint and doing things you don&rsquo;t expect. These sorts of potentially destructive behaviors are perhaps better handled in-band where you can apply some sanity checks.</p>
+
+<p>But if all you need to do is get content from an API without exposing your keys to the public, this might be a good solution for you.</p>
+
+<h3>Some numbers</h3>
+
+<p>This is very unscientific, but I setup a <a href="https://gist.github.com/semanticart/b0285765737997e8593://gist.github.com/semanticart/b0285765737997e8593e">Go server</a> on heroku <a href="http://sleepy-server.herokuapp.com/">http://sleepy-server.herokuapp.com/</a> that takes a request, waits 1 second, and then returns plain text.</p>
+
+<p>The benchmark for that with <code>ab -c 300 -n 600 "http://sleepy-server.herokuapp.com/"</code></p>
+
+<pre><code>Concurrency Level:      300
+Time taken for tests:   5.046 seconds
+Complete requests:      600
+Failed requests:        0
+Write errors:           0
+Total transferred:      83400 bytes
+HTML transferred:       2400 bytes
+Requests per second:    118.91 [#/sec] (mean)
+Time per request:       2522.907 [ms] (mean)
+Time per request:       8.410 [ms] (mean, across all concurrent requests)
+Transfer rate:          16.14 [Kbytes/sec] received
+
+Connection Times (ms)
+              min  mean[+/-sd] median   max
+Connect:       28  322 534.7    107    2257
+Processing:  1040 1229 223.1   1148    2640
+Waiting:     1038 1228 223.0   1148    2640
+Total:       1069 1552 587.1   1309    3867
+</code></pre>
+
+<p>Now, let&rsquo;s use our api_proxy to fetch requests from that server and serve them up by setting <code>URL_ROOT=http://sleepy-server.herokuapp.com</code>.</p>
+
+<p>And we&rsquo;ll use the same benchmark command: <code>ab -c 300 -n 600 "http://some-fake-server-name-here.herokuapp.com/"</code></p>
+
+<pre><code>Concurrency Level:      300
+Time taken for tests:   5.285 seconds
+Complete requests:      600
+Failed requests:        0
+Write errors:           0
+Total transferred:      132000 bytes
+HTML transferred:       3000 bytes
+Requests per second:    113.54 [#/sec] (mean)
+Time per request:       2642.282 [ms] (mean)
+Time per request:       8.808 [ms] (mean, across all concurrent requests)
+Transfer rate:          24.39 [Kbytes/sec] received
+
+Connection Times (ms)
+              min  mean[+/-sd] median   max
+Connect:       28  324 550.9     75    2260
+Processing:  1049 1406 325.2   1333    3012
+Waiting:     1049 1405 325.1   1331    3012
+Total:       1085 1730 609.4   1644    3875
+</code></pre>
+
+<p>Scientific or not, that&rsquo;s performance I can live with. And hopefully those API endpoints aren&rsquo;t quite taking a full second per request.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Unicorn Pukes Serving Large Files]]></title>
+    <link href="http://blog.semanticart.com/blog/blog/2013/08/29/unicorn-pukes-serving-large-files/"/>
+    <updated>2013-08-29T13:46:00-05:00</updated>
+    <id>http://blog.semanticart.com/blog/blog/2013/08/29/unicorn-pukes-serving-large-files</id>
+    <content type="html"><![CDATA[<p>Earlier today I was getting this weird <a href="http://unicorn.bogomips.org/">unicorn</a> error on heroku when trying to serve a retina-sized image.</p>
+
+<pre><code>ERROR -- : app error: undefined method `each' for nil:NilClass (NoMethodError)
+ERROR -- : [..]/unicorn-4.6.3/lib/unicorn/http_response.rb:60:in `http_response_write'
+ERROR -- : [..]/unicorn-4.6.3/lib/unicorn/http_server.rb:563:in `process_client'
+ERROR -- : [..]/unicorn-4.6.3/lib/unicorn/http_server.rb:633:in `worker_loop'
+ERROR -- : [..]/unicorn-4.6.3/lib/unicorn/http_server.rb:500:in `spawn_missing_workers'
+ERROR -- : [..]/unicorn-4.6.3/lib/unicorn/http_server.rb:142:in `start'
+ERROR -- : [..]/unicorn-4.6.3/bin/unicorn_rails:209:in `&lt;top (required)&gt;'
+</code></pre>
+
+<p>Weird, right?  But sure enough, whenever I tried to view some-image@2x.png, everything went terribly wrong.</p>
+
+<p>Googling took too long to find an answer, so I&rsquo;m sharing my solution here in hopes that it helps someone else (oh, hai, google bot).</p>
+
+<p>The issue is actually a bug in the version of rack-cache required by actionpack in Rails 3.2.14. Attempting to serve files larger than 1mb causes this error.</p>
+
+<p>It has been <a href="https://github.com/rtomayko/rack-cache/issues/42">fixed</a>, but I had to require the master branch for rack-cache to resolve the problem.</p>
+
+<p><code>ruby Gemfile
+gem "rack-cache", github: "rtomayko/rack-cache"
+gem "unicorn"
+</code></p>
+
+<p>No more error.</p>
+
+<p>Now, the real solution is to not serve large images through unicorn on heroku. But hooking up a CDN is another problem for another time.</p>
+]]></content>
+  </entry>
+  
+</feed>

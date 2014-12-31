@@ -1,0 +1,265 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: go | semantic art]]></title>
+  <link href="http://blog.semanticart.com/blog/blog/categories/go/atom.xml" rel="self"/>
+  <link href="http://blog.semanticart.com/blog/"/>
+  <updated>2014-12-31T17:44:38-06:00</updated>
+  <id>http://blog.semanticart.com/blog/</id>
+  <author>
+    <name><![CDATA[Jeffrey Chupp]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[A proper API proxy written in Go]]></title>
+    <link href="http://blog.semanticart.com/blog/blog/2013/11/11/a-proper-api-proxy-written-in-go/"/>
+    <updated>2013-11-11T16:16:00-06:00</updated>
+    <id>http://blog.semanticart.com/blog/blog/2013/11/11/a-proper-api-proxy-written-in-go</id>
+    <content type="html"><![CDATA[<p>A little over a month ago, I blogged about <a href="http://blog.semanticart.com/blog/2013/09/23/a-simple-api-proxy-written-in-go/">a API proxy written in Go</a>. This post contained a functioning but incredibly naive (not to mention unidiomatic) piece of Go code intended to allow proxying API requests while hiding your API keys. Here&rsquo;s an updated version that makes better use of the Go standard library and works using layers like Ruby&rsquo;s middleware (for more on this topic, <a href="http://justinas.org/writing-http-middleware-in-go/">see the excellent article here</a>). It also improves upon the original in that it will work with all HTTP verbs.</p>
+
+<p>When writing the first version, I tried using <a href="http://golang.org/pkg/net/http/httputil/#NewSingleHostReverseProxy">httputil.NewSingleHostReverseProxy</a> since the name sounds like exactly what I was trying to do. There was an important piece missing by default, though, which made the library seem mysteriously broken. Being a newbie in a hurry, I went with the solution you can see in the previous post.</p>
+
+<p>What was missing? httputil.NewSingleHostReverseProxy does not set the host of the request to the host of the destination server. If you&rsquo;re proxying from foo.com to bar.com, requests will arrive at bar.com with the host of foo.com. Many webservers are configured to not serve pages if a request doesn&rsquo;t appear from the same host.</p>
+
+<p>Fortunately it isn&rsquo;t too complicated to modify the chain to tweak the host.</p>
+
+<p>``` go
+func sameHost(handler http.Handler) http.Handler {</p>
+
+<pre><code>return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+    r.Host = r.URL.Host
+    handler.ServeHTTP(w, r)
+})
+</code></pre>
+
+<p>}</p>
+
+<p>```</p>
+
+<p>And the usage:
+<code>go
+// initialize our reverse proxy
+reverseProxy := httputil.NewSingleHostReverseProxy(serverUrl)
+// wrap that proxy with our sameHost function
+singleHosted := sameHost(reverseProxy)
+http.ListenAndServe(":5000", singleHosted)
+</code></p>
+
+<p>Perfect. We&rsquo;re now setting the host of the request to the host of the destination URL.</p>
+
+<p>Continuing with this approach, let&rsquo;s combine our secret query params with the existing request query.</p>
+
+<p>``` go
+func queryCombiner(handler http.Handler, addon string) http.Handler {</p>
+
+<pre><code>// first parse the provided string to pull out the keys and values
+values, err := url.ParseQuery(addon)
+if err != nil {
+    log.Fatal("addon failed to parse")
+}
+
+// now we apply our addon params to the existing query
+return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+    query := r.URL.Query()
+
+    for k, _ := range values {
+        query.Add(k, values.Get(k))
+    }
+
+    r.URL.RawQuery = query.Encode()
+    handler.ServeHTTP(w, r)
+})
+</code></pre>
+
+<p>}
+```</p>
+
+<p>And usage is similar to above. We just continue to chain together our handlers.</p>
+
+<p><code>go
+combined := queryCombiner(singleHosted, "key=value&amp;name=bob")
+</code></p>
+
+<p>Finally, we&rsquo;ll need to allow <a href="http://en.wikipedia.org/wiki/Cross-origin_resource_sharing">CORS</a> on our server.</p>
+
+<p>``` go
+func addCORS(handler http.Handler) http.Handler {</p>
+
+<pre><code>return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+    w.Header().Set("Access-Control-Allow-Origin", "*")
+    w.Header().Set("Access-Control-Allow-Headers", "X-Requested-With")
+    handler.ServeHTTP(w, r)
+})
+</code></pre>
+
+<p>}
+```</p>
+
+<p>And add that to our chain</p>
+
+<p><code>go
+cors := addCORS(combined)
+http.ListenAndServe(":5000", cors)
+</code></p>
+
+<p>The code is available on <a href="https://github.com/semanticart/simpleapiproxy">github</a> and it runs quite well with the <a href="https://github.com/kr/heroku-buildpack-go">heroku go buildpack</a>.</p>
+
+<p>It has a couple tests. I should add some more, but I&rsquo;m not totally happy with the current testing approach. Feedback is very welcome.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[A simple API proxy written in Go]]></title>
+    <link href="http://blog.semanticart.com/blog/blog/2013/09/23/a-simple-api-proxy-written-in-go/"/>
+    <updated>2013-09-23T00:00:00-05:00</updated>
+    <id>http://blog.semanticart.com/blog/blog/2013/09/23/a-simple-api-proxy-written-in-go</id>
+    <content type="html"><![CDATA[<h1>UPATE: see <a href="http://blog.semanticart.com/blog/2013/11/11/a-proper-api-proxy-written-in-go/">&ldquo;A proper API proxy written in Go&rdquo;</a> for a better solution to this problem.</h1>
+
+<h3>The problem:</h3>
+
+<p>Have you ever written a javascript app that needed to consume an API? What if the API requires you to pass your api key along in the query params? How do you hide your key?</p>
+
+<p>This weekend I bumped into this issue once again. I was writing a simple app in angular to consume the last.fm api when it hit me.</p>
+
+<p>This usually leaves me with two options:</p>
+
+<ol>
+<li>Decide my api key isn&rsquo;t worth hiding and just embed it in the javascript.</li>
+<li>Make a call to the app server (I&rsquo;m usually using Rails) that would then make the API call within the request lifecycle and return the json when the API call finishes.</li>
+</ol>
+
+
+<p>Option 1 is also known as &ldquo;giving up&rdquo; &ndash; you don&rsquo;t really want everyone to have your api key, do you? What happens when someone else starts using it to do nefarious things on your behalf or just decides to help you hit your rate limit faster?</p>
+
+<p>Option 2 is safer, but now your poor app server pays the penalty of the API being slow. If the API call takes 3 seconds, your server process/thread is tied up for that time. Lame.</p>
+
+<p>Imagine your rails app is built around an external API. Do you really want to spin up more and more instances to gain concurrency just to protect your key?</p>
+
+<h3>The solution: Move things out-of-band</h3>
+
+<p>For requests that could otherwise hit the api directly, your app server shouldn&rsquo;t pay the penalties of keeping your key secure. So let&rsquo;s move things out-of-band.</p>
+
+<p>I&rsquo;d been meaning to play with <a href="http://golang.org/">Go</a> for some time but never had the right project. The implementation here was fairly simple but needed to be highly concurrent, so this felt like a good fit.</p>
+
+<p>Borrowing from example Go http servers and http consumers, I came up with this:</p>
+
+<p>``` go
+package main</p>
+
+<p>import (</p>
+
+<pre><code>"fmt"
+"io/ioutil"
+"net/http"
+"os"
+</code></pre>
+
+<p>)</p>
+
+<p>func errorOut(err error) {</p>
+
+<pre><code>fmt.Printf("%s", err)
+os.Exit(1)
+</code></pre>
+
+<p>}</p>
+
+<p>func handler(w http.ResponseWriter, r *http.Request) {</p>
+
+<pre><code>w.Header().Set("Access-Control-Allow-Origin", "*")
+w.Header().Set("Access-Control-Allow-Headers", "X-Requested-With")
+
+if r.Method == "GET" {
+    var newUrl string = os.Getenv("URL_ROOT") + r.URL.Path[1:] + "?" +
+    r.URL.RawQuery + os.Getenv("URL_SUFFIX")
+
+    fmt.Printf("fetching %s\n", newUrl)
+
+    response, err := http.Get(newUrl)
+    if err != nil {
+        errorOut(err)
+    } else {
+        defer response.Body.Close()
+        contents, err := ioutil.ReadAll(response.Body)
+        if err != nil {
+            errorOut(err)
+        }
+        fmt.Fprintf(w, "%s\n", contents)
+    }
+}
+</code></pre>
+
+<p>}
+```</p>
+
+<p>The server takes incoming requests and will translate the url by substituting the provided URL_ROOT and appending the URL_SUFFIX (the api key). It fetches that foreign url and then returns the results.</p>
+
+<p>So with the example config:</p>
+
+<pre><code>URL_ROOT=http://ws.audioscrobbler.com/2.0/ URL_SUFFIX=&amp;api_key=XXXXXXXXXXXXX
+</code></pre>
+
+<p>A request to the go server at <a href="http://example.com/?method=user.getrecenttracks&amp;user=violencenow&amp;format=json">http://example.com/?method=user.getrecenttracks&amp;user=violencenow&amp;format=json</a> would return the contents of <a href="http://ws.audioscrobbler.com/2.0/?method=user.getrecenttracks&amp;user=violencenow&amp;format=json&amp;api_key=XXXXXXXXXXXXX">http://ws.audioscrobbler.com/2.0/?method=user.getrecenttracks&amp;user=violencenow&amp;format=json&amp;api_key=XXXXXXXXXXXXX</a></p>
+
+<p>This isn&rsquo;t a solution for everything. Right now it only supports GET requests &ndash; this is probably all you&rsquo;d ever want, lest someone start posting to your endpoint and doing things you don&rsquo;t expect. These sorts of potentially destructive behaviors are perhaps better handled in-band where you can apply some sanity checks.</p>
+
+<p>But if all you need to do is get content from an API without exposing your keys to the public, this might be a good solution for you.</p>
+
+<h3>Some numbers</h3>
+
+<p>This is very unscientific, but I setup a <a href="https://gist.github.com/semanticart/b0285765737997e8593://gist.github.com/semanticart/b0285765737997e8593e">Go server</a> on heroku <a href="http://sleepy-server.herokuapp.com/">http://sleepy-server.herokuapp.com/</a> that takes a request, waits 1 second, and then returns plain text.</p>
+
+<p>The benchmark for that with <code>ab -c 300 -n 600 "http://sleepy-server.herokuapp.com/"</code></p>
+
+<pre><code>Concurrency Level:      300
+Time taken for tests:   5.046 seconds
+Complete requests:      600
+Failed requests:        0
+Write errors:           0
+Total transferred:      83400 bytes
+HTML transferred:       2400 bytes
+Requests per second:    118.91 [#/sec] (mean)
+Time per request:       2522.907 [ms] (mean)
+Time per request:       8.410 [ms] (mean, across all concurrent requests)
+Transfer rate:          16.14 [Kbytes/sec] received
+
+Connection Times (ms)
+              min  mean[+/-sd] median   max
+Connect:       28  322 534.7    107    2257
+Processing:  1040 1229 223.1   1148    2640
+Waiting:     1038 1228 223.0   1148    2640
+Total:       1069 1552 587.1   1309    3867
+</code></pre>
+
+<p>Now, let&rsquo;s use our api_proxy to fetch requests from that server and serve them up by setting <code>URL_ROOT=http://sleepy-server.herokuapp.com</code>.</p>
+
+<p>And we&rsquo;ll use the same benchmark command: <code>ab -c 300 -n 600 "http://some-fake-server-name-here.herokuapp.com/"</code></p>
+
+<pre><code>Concurrency Level:      300
+Time taken for tests:   5.285 seconds
+Complete requests:      600
+Failed requests:        0
+Write errors:           0
+Total transferred:      132000 bytes
+HTML transferred:       3000 bytes
+Requests per second:    113.54 [#/sec] (mean)
+Time per request:       2642.282 [ms] (mean)
+Time per request:       8.808 [ms] (mean, across all concurrent requests)
+Transfer rate:          24.39 [Kbytes/sec] received
+
+Connection Times (ms)
+              min  mean[+/-sd] median   max
+Connect:       28  324 550.9     75    2260
+Processing:  1049 1406 325.2   1333    3012
+Waiting:     1049 1405 325.1   1331    3012
+Total:       1085 1730 609.4   1644    3875
+</code></pre>
+
+<p>Scientific or not, that&rsquo;s performance I can live with. And hopefully those API endpoints aren&rsquo;t quite taking a full second per request.</p>
+]]></content>
+  </entry>
+  
+</feed>

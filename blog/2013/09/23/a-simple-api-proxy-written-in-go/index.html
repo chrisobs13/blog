@@ -1,0 +1,364 @@
+
+<!DOCTYPE HTML>
+<html>
+<head>
+	<script data-cfasync="false" type="text/javascript" src="//use.typekit.net/axj3cfp.js"></script>
+	<script data-cfasync="false" type="text/javascript">try{Typekit.load();}catch(e){}</script>
+	<meta charset="utf-8">
+	<title>A simple API proxy written in Go  | semantic art</title>
+
+<meta name="author" content="Jeffrey Chupp"> 
+
+<meta name="description" content="personal weblog of jeffrey chupp"> <meta name="keywords" content="">
+
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+	<link href="/atom.xml" rel="alternate" title="semantic art" type="application/atom+xml">
+	<link rel="canonical" href="">
+	<link href="/favicon.png" rel="shortcut icon">
+	<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+	<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" type="text/css" media="screen" />
+<script type="text/javascript" src="/fancybox/jquery.fancybox.pack.js"></script>
+
+<script language="Javascript" type="text/javascript">
+$(document).ready(
+  function() {
+    (function($) {
+      $(".fancybox[data-content-id]").each(function() {
+        this.href = $(this).data('content-id');
+      });
+      $(".fancybox").fancybox({
+        beforeLoad: function() {
+          var el, 
+              id = $(this.element).data('title-id');
+
+          if (id) {
+            el = $('#' + id);
+
+            if (el.length) {
+              this.title = el.html();
+            }
+          }
+          if ($(this).data('content')) {
+            this.content = $(this).data('content');
+          }
+        },
+        helpers: {
+          title: {
+            type: 'inside'
+          }
+        }
+      });
+    })(jQuery);
+  }
+);
+</script>
+	
+</head>
+
+
+<body>
+	<header id="header" class="inner"><h1><a href="/">semantic art</a></h1>
+<h4>code should say something</h4>
+<nav id="main-nav"><ul>
+	<li><a href="/">Blog</a></li>
+	<li><a href="/archives">Archive</a></li>
+</ul>
+</nav>
+<nav id="mobile-nav">
+	<div class="alignleft menu">
+		<a class="button">Menu</a>
+		<div class="container"><ul>
+	<li><a href="/">Blog</a></li>
+	<li><a href="/archives">Archive</a></li>
+</ul>
+</div>
+	</div>
+	<div class="alignright search">
+		<a class="button"></a>
+		<div class="container">
+			<form action="http://google.com/search" method="get">
+				<input type="text" name="q" results="0">
+				<input type="hidden" name="q" value="site:blog.semanticart.com/blog">
+			</form>
+		</div>
+	</div>
+</nav>
+
+
+</header>
+
+	<div id="content" class="inner"><article class="post">
+	<h2 class="title">A Simple API Proxy Written in Go</h2>
+	<div class="entry-content"><h1>UPATE: see <a href="http://blog.semanticart.com/blog/2013/11/11/a-proper-api-proxy-written-in-go/">&ldquo;A proper API proxy written in Go&rdquo;</a> for a better solution to this problem.</h1>
+
+<h3>The problem:</h3>
+
+<p>Have you ever written a javascript app that needed to consume an API? What if the API requires you to pass your api key along in the query params? How do you hide your key?</p>
+
+<p>This weekend I bumped into this issue once again. I was writing a simple app in angular to consume the last.fm api when it hit me.</p>
+
+<p>This usually leaves me with two options:</p>
+
+<ol>
+<li>Decide my api key isn&rsquo;t worth hiding and just embed it in the javascript.</li>
+<li>Make a call to the app server (I&rsquo;m usually using Rails) that would then make the API call within the request lifecycle and return the json when the API call finishes.</li>
+</ol>
+
+
+<p>Option 1 is also known as &ldquo;giving up&rdquo; &ndash; you don&rsquo;t really want everyone to have your api key, do you? What happens when someone else starts using it to do nefarious things on your behalf or just decides to help you hit your rate limit faster?</p>
+
+<p>Option 2 is safer, but now your poor app server pays the penalty of the API being slow. If the API call takes 3 seconds, your server process/thread is tied up for that time. Lame.</p>
+
+<p>Imagine your rails app is built around an external API. Do you really want to spin up more and more instances to gain concurrency just to protect your key?</p>
+
+<h3>The solution: Move things out-of-band</h3>
+
+<p>For requests that could otherwise hit the api directly, your app server shouldn&rsquo;t pay the penalties of keeping your key secure. So let&rsquo;s move things out-of-band.</p>
+
+<p>I&rsquo;d been meaning to play with <a href="http://golang.org/">Go</a> for some time but never had the right project. The implementation here was fairly simple but needed to be highly concurrent, so this felt like a good fit.</p>
+
+<p>Borrowing from example Go http servers and http consumers, I came up with this:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+</pre></td><td class='code'><pre><code class='go'><span class='line'><span class="kn">package</span> <span class="nx">main</span>
+</span><span class='line'>
+</span><span class='line'><span class="kn">import</span> <span class="p">(</span>
+</span><span class='line'>  <span class="s">&quot;fmt&quot;</span>
+</span><span class='line'>  <span class="s">&quot;io/ioutil&quot;</span>
+</span><span class='line'>  <span class="s">&quot;net/http&quot;</span>
+</span><span class='line'>  <span class="s">&quot;os&quot;</span>
+</span><span class='line'><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'><span class="kd">func</span> <span class="nx">errorOut</span><span class="p">(</span><span class="nx">err</span> <span class="kt">error</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>  <span class="nx">fmt</span><span class="p">.</span><span class="nx">Printf</span><span class="p">(</span><span class="s">&quot;%s&quot;</span><span class="p">,</span> <span class="nx">err</span><span class="p">)</span>
+</span><span class='line'>  <span class="nx">os</span><span class="p">.</span><span class="nx">Exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="kd">func</span> <span class="nx">handler</span><span class="p">(</span><span class="nx">w</span> <span class="nx">http</span><span class="p">.</span><span class="nx">ResponseWriter</span><span class="p">,</span> <span class="nx">r</span> <span class="o">*</span><span class="nx">http</span><span class="p">.</span><span class="nx">Request</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>  <span class="nx">w</span><span class="p">.</span><span class="nx">Header</span><span class="p">().</span><span class="nx">Set</span><span class="p">(</span><span class="s">&quot;Access-Control-Allow-Origin&quot;</span><span class="p">,</span> <span class="s">&quot;*&quot;</span><span class="p">)</span>
+</span><span class='line'>  <span class="nx">w</span><span class="p">.</span><span class="nx">Header</span><span class="p">().</span><span class="nx">Set</span><span class="p">(</span><span class="s">&quot;Access-Control-Allow-Headers&quot;</span><span class="p">,</span> <span class="s">&quot;X-Requested-With&quot;</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">if</span> <span class="nx">r</span><span class="p">.</span><span class="nx">Method</span> <span class="o">==</span> <span class="s">&quot;GET&quot;</span> <span class="p">{</span>
+</span><span class='line'>      <span class="kd">var</span> <span class="nx">newUrl</span> <span class="kt">string</span> <span class="p">=</span> <span class="nx">os</span><span class="p">.</span><span class="nx">Getenv</span><span class="p">(</span><span class="s">&quot;URL_ROOT&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="nx">r</span><span class="p">.</span><span class="nx">URL</span><span class="p">.</span><span class="nx">Path</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="o">+</span> <span class="s">&quot;?&quot;</span> <span class="o">+</span>
+</span><span class='line'>        <span class="nx">r</span><span class="p">.</span><span class="nx">URL</span><span class="p">.</span><span class="nx">RawQuery</span> <span class="o">+</span> <span class="nx">os</span><span class="p">.</span><span class="nx">Getenv</span><span class="p">(</span><span class="s">&quot;URL_SUFFIX&quot;</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'>      <span class="nx">fmt</span><span class="p">.</span><span class="nx">Printf</span><span class="p">(</span><span class="s">&quot;fetching %s\n&quot;</span><span class="p">,</span> <span class="nx">newUrl</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'>      <span class="nx">response</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">http</span><span class="p">.</span><span class="nx">Get</span><span class="p">(</span><span class="nx">newUrl</span><span class="p">)</span>
+</span><span class='line'>      <span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+</span><span class='line'>          <span class="nx">errorOut</span><span class="p">(</span><span class="nx">err</span><span class="p">)</span>
+</span><span class='line'>      <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span><span class='line'>          <span class="k">defer</span> <span class="nx">response</span><span class="p">.</span><span class="nx">Body</span><span class="p">.</span><span class="nx">Close</span><span class="p">()</span>
+</span><span class='line'>          <span class="nx">contents</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">ioutil</span><span class="p">.</span><span class="nx">ReadAll</span><span class="p">(</span><span class="nx">response</span><span class="p">.</span><span class="nx">Body</span><span class="p">)</span>
+</span><span class='line'>          <span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+</span><span class='line'>              <span class="nx">errorOut</span><span class="p">(</span><span class="nx">err</span><span class="p">)</span>
+</span><span class='line'>          <span class="p">}</span>
+</span><span class='line'>          <span class="nx">fmt</span><span class="p">.</span><span class="nx">Fprintf</span><span class="p">(</span><span class="nx">w</span><span class="p">,</span> <span class="s">&quot;%s\n&quot;</span><span class="p">,</span> <span class="nx">contents</span><span class="p">)</span>
+</span><span class='line'>      <span class="p">}</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>The server takes incoming requests and will translate the url by substituting the provided URL_ROOT and appending the URL_SUFFIX (the api key). It fetches that foreign url and then returns the results.</p>
+
+<p>So with the example config:</p>
+
+<pre><code>URL_ROOT=http://ws.audioscrobbler.com/2.0/ URL_SUFFIX=&amp;api_key=XXXXXXXXXXXXX
+</code></pre>
+
+<p>A request to the go server at <a href="http://example.com/?method=user.getrecenttracks&amp;user=violencenow&amp;format=json">http://example.com/?method=user.getrecenttracks&amp;user=violencenow&amp;format=json</a> would return the contents of <a href="http://ws.audioscrobbler.com/2.0/?method=user.getrecenttracks&amp;user=violencenow&amp;format=json&amp;api_key=XXXXXXXXXXXXX">http://ws.audioscrobbler.com/2.0/?method=user.getrecenttracks&amp;user=violencenow&amp;format=json&amp;api_key=XXXXXXXXXXXXX</a></p>
+
+<p>This isn&rsquo;t a solution for everything. Right now it only supports GET requests &ndash; this is probably all you&rsquo;d ever want, lest someone start posting to your endpoint and doing things you don&rsquo;t expect. These sorts of potentially destructive behaviors are perhaps better handled in-band where you can apply some sanity checks.</p>
+
+<p>But if all you need to do is get content from an API without exposing your keys to the public, this might be a good solution for you.</p>
+
+<h3>Some numbers</h3>
+
+<p>This is very unscientific, but I setup a <a href="https://gist.github.com/semanticart/b0285765737997e8593://gist.github.com/semanticart/b0285765737997e8593e">Go server</a> on heroku <a href="http://sleepy-server.herokuapp.com/">http://sleepy-server.herokuapp.com/</a> that takes a request, waits 1 second, and then returns plain text.</p>
+
+<p>The benchmark for that with <code>ab -c 300 -n 600 "http://sleepy-server.herokuapp.com/"</code></p>
+
+<pre><code>Concurrency Level:      300
+Time taken for tests:   5.046 seconds
+Complete requests:      600
+Failed requests:        0
+Write errors:           0
+Total transferred:      83400 bytes
+HTML transferred:       2400 bytes
+Requests per second:    118.91 [#/sec] (mean)
+Time per request:       2522.907 [ms] (mean)
+Time per request:       8.410 [ms] (mean, across all concurrent requests)
+Transfer rate:          16.14 [Kbytes/sec] received
+
+Connection Times (ms)
+              min  mean[+/-sd] median   max
+Connect:       28  322 534.7    107    2257
+Processing:  1040 1229 223.1   1148    2640
+Waiting:     1038 1228 223.0   1148    2640
+Total:       1069 1552 587.1   1309    3867
+</code></pre>
+
+<p>Now, let&rsquo;s use our api_proxy to fetch requests from that server and serve them up by setting <code>URL_ROOT=http://sleepy-server.herokuapp.com</code>.</p>
+
+<p>And we&rsquo;ll use the same benchmark command: <code>ab -c 300 -n 600 "http://some-fake-server-name-here.herokuapp.com/"</code></p>
+
+<pre><code>Concurrency Level:      300
+Time taken for tests:   5.285 seconds
+Complete requests:      600
+Failed requests:        0
+Write errors:           0
+Total transferred:      132000 bytes
+HTML transferred:       3000 bytes
+Requests per second:    113.54 [#/sec] (mean)
+Time per request:       2642.282 [ms] (mean)
+Time per request:       8.808 [ms] (mean, across all concurrent requests)
+Transfer rate:          24.39 [Kbytes/sec] received
+
+Connection Times (ms)
+              min  mean[+/-sd] median   max
+Connect:       28  324 550.9     75    2260
+Processing:  1049 1406 325.2   1333    3012
+Waiting:     1049 1405 325.1   1331    3012
+Total:       1085 1730 609.4   1644    3875
+</code></pre>
+
+<p>Scientific or not, that&rsquo;s performance I can live with. And hopefully those API endpoints aren&rsquo;t quite taking a full second per request.</p>
+</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-09-23T00:00:00-05:00" pubdate data-updated="true">Sep 23<span>rd</span>, 2013</time></div>
+	
+
+<div class="tags">
+
+	<a class='category' href='/blog/categories/apis/'>apis</a>, <a class='category' href='/blog/categories/go/'>go</a>, <a class='category' href='/blog/categories/rails/'>rails</a>
+
+</div>
+
+
+	
+</div></article>
+
+	<div class="share">
+	<div class="addthis_toolbox addthis_default_style ">
+	
+	
+	<a class="addthis_button_tweet"></a>
+	
+	
+<!---	<a class="addthis_counter addthis_pill_style"></a> --->
+	</div>
+  <script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#pubid="></script>
+</div>
+
+
+
+<section id="comment">
+    <h2 class="title">Comments</h2>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+</section>
+</div>
+	<footer id="footer" class="inner">Copyright &copy; 2014
+
+    Jeffrey Chupp
+
+<br>
+Powered by Octopress.
+</footer>
+	<script src="/javascripts/slash.js"></script>
+<script src="/javascripts/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+	$('.fancybox').fancybox();
+})(jQuery);
+</script> <!-- Delete or comment this line to disable Fancybox -->
+
+
+<script type="text/javascript">
+      var disqus_shortname = 'semanticart';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://blog.semanticart.com/blog/blog/2013/09/23/a-simple-api-proxy-written-in-go/';
+        var disqus_url = 'http://blog.semanticart.com/blog/blog/2013/09/23/a-simple-api-proxy-written-in-go/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+	<script type="text/javascript">
+		var _gaq = _gaq || [];
+		_gaq.push(['_setAccount', 'UA-35446138-1']);
+		_gaq.push(['_trackPageview']);
+
+		(function() {
+			var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+			ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+			var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+		})();
+	</script>
+
+
+
+</body>
+</html>

@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: front-end | semantic art]]></title>
+  <link href="http://blog.semanticart.com/blog/blog/categories/front-end/atom.xml" rel="self"/>
+  <link href="http://blog.semanticart.com/blog/"/>
+  <updated>2014-12-31T17:44:38-06:00</updated>
+  <id>http://blog.semanticart.com/blog/</id>
+  <author>
+    <name><![CDATA[Jeffrey Chupp]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Flashing sprites aren't as sexy as they sound]]></title>
+    <link href="http://blog.semanticart.com/blog/blog/2012/10/09/flashing-sprites-arent-as-sexy-as-they-sound/"/>
+    <updated>2012-10-09T20:15:00-05:00</updated>
+    <id>http://blog.semanticart.com/blog/blog/2012/10/09/flashing-sprites-arent-as-sexy-as-they-sound</id>
+    <content type="html"><![CDATA[<p>My skills have traditionally skewed towards the back-end so I&rsquo;m still finding lots of new tricks in front-end development that are new to me. Here&rsquo;s a quick example&hellip;</p>
+
+<p>I recently created a button with <a href="http://compass-style.org/help/tutorials/spriting/" title="Compass Sprite Tutorial">Compass sprites</a> that had images for the default state, hover state, and active (pressed) state.</p>
+
+<p>Here&rsquo;s the gist of what I was doing:</p>
+
+<p>``` sass special_button.sass
+$button_sprites: sprite-map(&lsquo;/special-button/*.png&rsquo;)</p>
+
+<p>.special-button
+  background: sprite($button_sprites, &ldquo;button-default&rdquo;)</p>
+
+<p>  &amp;:hover</p>
+
+<pre><code>background: sprite($button_sprites, "button-hover")
+</code></pre>
+
+<p>  &amp;:active</p>
+
+<pre><code>background: sprite($button_sprites, "button-active")
+</code></pre>
+
+<p>```</p>
+
+<p>which generates this css:</p>
+
+<p><code>css special_button.css
+.special-button {
+  background: url(/assets/special-button-sb6a3aa70c5.png) 0 -204px
+}
+.special-button:hover {
+  background: url(/assets/special-button-sb6a3aa70c5.png) 0 -230px;
+}
+.special-button:active {
+  background: url(/assets/special-button-sb6a3aa70c5.png) 0 -126px;
+}
+</code></p>
+
+<p>Pretty straight-forward, right? For each state I specify which of the sprite sub-images it should show.</p>
+
+<p>Unfortunately, I was bumping into an issue in Chrome where the button would sometimes flash between image states on hover and active.</p>
+
+<p>After a bit of googling, I found <a href="http://stackoverflow.com/questions/8035366/image-flickering-on-mouseover-even-when-sprites-are-used-for-hover-image" title="StackOverflow Post">an answer</a>. The problem is that I was specifying the URL redundantly, causing Chrome to show no background while it briefly loads that same sprite again to show it at the new position. After a little digging in the Compass docs, I found <a href="http://compass-style.org/reference/compass/helpers/sprites/#sprite-position">sprite-position</a> and tweaked accordingly:</p>
+
+<p>``` sass special_button_fixed.sass
+$button_sprites: sprite-map(&lsquo;/special-button/*.png&rsquo;)</p>
+
+<p>.special-button
+  background: sprite($button_sprites, &ldquo;button-default&rdquo;)</p>
+
+<p>  &amp;:hover</p>
+
+<pre><code>background-position: sprite-position($button_sprites, "button-hover")
+</code></pre>
+
+<p>  &amp;:active</p>
+
+<pre><code>background-position: sprite-position($button_sprites, "button-active")
+</code></pre>
+
+<p>```</p>
+
+<p>Now we&rsquo;re using the same sprite specified in the original <code>.special_button</code> class and just changing the position in the other states. Our flashing problem is gone.</p>
+]]></content>
+  </entry>
+  
+</feed>
