@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[Category: introspection | semantic art]]></title>
-  <link href="http://blog.semanticart.com/blog/blog/categories/introspection/atom.xml" rel="self"/>
+  <title><![CDATA[Category: reflection | semantic art]]></title>
+  <link href="http://blog.semanticart.com/blog/blog/categories/reflection/atom.xml" rel="self"/>
   <link href="http://blog.semanticart.com/blog/"/>
-  <updated>2014-12-31T17:51:07-06:00</updated>
+  <updated>2014-12-31T17:52:40-06:00</updated>
   <id>http://blog.semanticart.com/blog/</id>
   <author>
     <name><![CDATA[Jeffrey Chupp]]></name>
