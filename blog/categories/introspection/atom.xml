@@ -4,7 +4,7 @@
   <title><![CDATA[Category: introspection | semantic art]]></title>
   <link href="http://blog.semanticart.com/blog/blog/categories/introspection/atom.xml" rel="self"/>
   <link href="http://blog.semanticart.com/blog/"/>
-  <updated>2014-12-31T17:48:38-06:00</updated>
+  <updated>2014-12-31T17:50:47-06:00</updated>
   <id>http://blog.semanticart.com/blog/</id>
   <author>
     <name><![CDATA[Jeffrey Chupp]]></name>
@@ -35,11 +35,11 @@
 
 <p>Thanks to <a href="http://www.last.fm/user/violencenow">last.fm</a>, I can see that roughly half my top 15 artists in 2014 were artists I discovered this year.</p>
 
-<p><img class="right" src="/images/top-artists-2014.png" title="&lsquo;2014 Top Artists&rsquo;" ></p>
+<p>{% img right /images/top-artists-2014.png &lsquo;2014 Top Artists&rsquo; %}</p>
 
 <p>The chart for the last 3 months is also interesting.</p>
 
-<p><img class="right" src="/images/top-artists-2014-last-three.png" title="&lsquo;2014 Top Artists of Last Three Months&rsquo;" ></p>
+<p>{% img right /images/top-artists-2014-last-three.png &lsquo;2014 Top Artists of Last Three Months&rsquo; %}</p>
 
 <p>Themes for the year include punk, newer emo bands, and Norwegian dream pop&hellip; I didn&rsquo;t see that last one coming, but <a href="http://www.last.fm/music/Bendik">Bendik</a> and <a href="http://www.last.fm/music/Frode+Johannessen">Frode Johannessen</a> hit me perfectly in the past few months. Amazingly, Frode is essentially ungoogleable and only has 463 last.fm listeners at the time I write this. <a href="https://www.youtube.com/watch?v=Nb_-QK9wPas">Det gjør någe me meg</a> is worth a listen.</p>
 
@@ -59,7 +59,7 @@
 
 <p>This year reading was essentially my only hobby besides playing with my son Trey (10). In addition to playing in the park and such, we spent entirely too much time playing video games together. Favorites from this year include <a href="http://www.awesomenauts.com/">Awesomenauts</a> and adventure games like <a href="http://en.wikipedia.org/wiki/Day_of_the_Tentacle">Day of the Tentacle</a>, <a href="http://www.gog.com/game/deponia">Deponia</a>, and <a href="http://www.gog.com/game/the_ballads_of_reemus_when_the_bed_bites">Ballads of Reemus</a>. Trey also played his first FPS, <a href="http://www.gog.com/game/tower_of_guns">Tower of Guns</a>, and did wonderfully.</p>
 
-<p>Next year I&rsquo;d like to do more toying around with small-electronics (Arduino, etc.) and get Trey involved. I&rsquo;d also like to engage in more physically active hobbies with my son (perhaps rock-climbing?). I&rsquo;ll keep playing adeventure/puzzle games with him, though, since they&rsquo;re good bonding time.</p>
+<p>Next year I&rsquo;d like to do more toying around with small-electronics (Arduino, etc.) and get Trey involved. I&rsquo;d also like to engage in more physically active hobbies with my son (perhaps rock-climbing?). I&rsquo;ll keep playing adeventure/puzzle games with him, though, since they&rsquo;re good bonding time. I should also blog more.</p>
 
 <h2>Family</h2>
 

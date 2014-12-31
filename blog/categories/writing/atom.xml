@@ -4,7 +4,7 @@
   <title><![CDATA[Category: writing | semantic art]]></title>
   <link href="http://blog.semanticart.com/blog/blog/categories/writing/atom.xml" rel="self"/>
   <link href="http://blog.semanticart.com/blog/"/>
-  <updated>2014-12-31T17:48:38-06:00</updated>
+  <updated>2014-12-31T17:50:47-06:00</updated>
   <id>http://blog.semanticart.com/blog/</id>
   <author>
     <name><![CDATA[Jeffrey Chupp]]></name>
@@ -430,7 +430,7 @@ end
 
 <p>Here&rsquo;s a preview as seen in <a href="http://www.amazon.com/gp/feature.html?docId=1000765261">Kindle Previewer</a></p>
 
-<p><img class="right" src="/images/preview.png" width="328" height="560" title="&lsquo;Example Generated mobi file&rsquo;" ></p>
+<p>{% img right /images/preview.png 328 560 &lsquo;Example Generated mobi file&rsquo; %}</p>
 
 <p>And here are the generated <a href="/story.epub">EPUB</a> and <a href="/story.mobi">.mobi</a> files and the <a href="/story.md">markdown source file</a>.</p>
 
