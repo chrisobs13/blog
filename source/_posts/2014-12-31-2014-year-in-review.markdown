@@ -3,7 +3,7 @@ layout: post
 title: "2014 Year-In-Review"
 date: 2014-12-31 18:50
 comments: true
-categories: introspection
+categories: reflection
 ---
 
 2014 was a great but complicated year. Here's a completely unnecessary and self-indulgent look back at some of it.
@@ -46,7 +46,7 @@ Next year, I actually plan to read less with an eye towards diversifying my hobb
 
 This year reading was essentially my only hobby besides playing with my son Trey (10). In addition to playing in the park and such, we spent entirely too much time playing video games together. Favorites from this year include [Awesomenauts][awesome] and adventure games like [Day of the Tentacle][dott], [Deponia][deponia], and [Ballads of Reemus][ballad]. Trey also played his first FPS, [Tower of Guns][tog], and did wonderfully.
 
-Next year I'd like to do more toying around with small-electronics (Arduino, etc.) and get Trey involved. I'd also like to engage in more physically active hobbies with my son (perhaps rock-climbing?). I'll keep playing adeventure/puzzle games with him, though, since they're good bonding time.
+Next year I'd like to do more toying around with small-electronics (Arduino, etc.) and get Trey involved. I'd also like to engage in more physically active hobbies with my son (perhaps rock-climbing?). I'll keep playing adeventure/puzzle games with him, though, since they're good bonding time. I should also blog more.
 
 ## Family
 
