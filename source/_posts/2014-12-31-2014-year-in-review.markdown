@@ -1,0 +1,86 @@
+---
+layout: post
+title: "2014 Year-In-Review"
+date: 2014-12-31 18:50
+comments: true
+categories: introspection
+---
+
+2014 was a great but complicated year. Here's a completely unnecessary and self-indulgent look back at some of it.
+
+<!--more-->
+
+## Coding
+
+This year I moved away from doing full-time Rails to working on single-page Backbone apps with Java APIs. I still reach for Ruby as my scripting language, but I'm solving different problems these days. I still feel sluggish in Java and am working to pick up some best-practices. I've also been enjoying playing with [Elixir][elixir].
+
+I didn't contribute much to open source this year. This is probably related to a lack of free time from changing jobs and my daughter being born. [My current company][hubspot] has many internal tools so a lot of my remaining tinkering energies were spent improving those.
+
+Next year I'd like to work more on open source and dig deeper into functional programming.
+
+## Music
+
+Thanks to [last.fm][lastfm], I can see that roughly half my top 15 artists in 2014 were artists I discovered this year.
+
+{% img right /images/top-artists-2014.png '2014 Top Artists' %}
+
+The chart for the last 3 months is also interesting.
+
+{% img right /images/top-artists-2014-last-three.png '2014 Top Artists of Last Three Months' %}
+
+Themes for the year include punk, newer emo bands, and Norwegian dream pop... I didn't see that last one coming, but [Bendik][bendik] and [Frode Johannessen][frode] hit me perfectly in the past few months. Amazingly, Frode is essentially ungoogleable and only has 463 last.fm listeners at the time I write this. [Det gjør någe me meg][frode-track] is worth a listen.
+
+I believe those last two artists were recommendations from [Youth Pictures of Florence Henderson][ypofh] who I continue to love like no other.
+
+Album of the year for me is a toss-up between Prawn's [Kingfisher][kingfisher] and The Hotelier's [Home, Like Noplace Is There][home]. Both are stellar and you should frankly drop whatever you're doing and listen to both of them right now. I'll wait.
+
+## Reading
+
+For the second year in a row, I set and completed a goal of reading fifty books for the [Goodreads Reading Challenge][goodreads-challenge]. Despite reading 68 books last year, I just barely finished 50 this year. The average page count per book was 430. [Looking at the books I read][read], you see mostly Sci-fi and Fantasy with a few nonfiction books thrown in.
+
+Brandon Sanderson continues to rock my world with his [The Way of Kings][wayofkings] and the sequel accounting for 2k+ pages of goodness. Scott Lynch's [Gentleman Bastard][gb] books were fun heist stories with lovable rogues. The strangest but most loved book was Catherynne M. Valente's [Silently and Very Fast][silently] which tells the story of the life of a budding AI through dreamy fairytale symbolism. It certainly isn't for everyone, but I found it to be an important read.
+
+Next year, I actually plan to read less with an eye towards diversifying my hobbies. I'll probably set a goal of 30 books. Additionally, I'd like that to include more technical writing.
+
+## Hobbies
+
+This year reading was essentially my only hobby besides playing with my son Trey (10). In addition to playing in the park and such, we spent entirely too much time playing video games together. Favorites from this year include [Awesomenauts][awesome] and adventure games like [Day of the Tentacle][dott], [Deponia][deponia], and [Ballads of Reemus][ballad]. Trey also played his first FPS, [Tower of Guns][tog], and did wonderfully.
+
+Next year I'd like to do more toying around with small-electronics (Arduino, etc.) and get Trey involved. I'd also like to engage in more physically active hobbies with my son (perhaps rock-climbing?). I'll keep playing adeventure/puzzle games with him, though, since they're good bonding time.
+
+## Family
+
+I had a daughter this year in May. She's amazing. Trey has been a great big-brother and Julia continues to be an excellent mother. I'm a lucky man.
+
+Nothing is more important than family. Next year I'll be asking myself how I can spend more quality time with them.
+
+## Current status: Still not rich.
+
+For this year's wild attempt at financial freedom I spent a lot of time trying to learn game development. [Unity][unity] is interesting but scaling 2d assets are still a giant pain and I realized I don't have the talent or free-time to be a one-man game studio. Go figure, right? Maybe if I quit my job and doubled-down on it... but that's just not realistic or what I want right now.
+
+For next year's wild attempt, I'd really like to get some sort of SASS going as a side-project. If I've learned anything working at HubSpot, it is how the economics of SASS are compelling and how having customers giving you money every month is both freeing and empowering. Even if this attempt fails dramatically, there's plenty to learn here.
+
+## Onward
+
+I have a great job, great friends, and a great family. Alright, 2015, let's do this.
+
+[lastfm]: http://www.last.fm/user/violencenow
+[bendik]: http://www.last.fm/music/Bendik
+[frode]: http://www.last.fm/music/Frode+Johannessen
+[ypofh]: http://www.last.fm/music/Youth+Pictures+of+Florence+Henderson
+[kingfisher]: http://topshelfrecords.bandcamp.com/album/kingfisher
+[home]: http://thehotelyear.bandcamp.com/album/home-like-noplace-is-there
+[frode-track]: https://www.youtube.com/watch?v=Nb_-QK9wPas
+[goodreads-challenge]: https://www.goodreads.com/challenges/1914-2014-reading-challenge
+[read]: https://www.goodreads.com/user_challenges/1225227
+[wayofkings]: https://www.goodreads.com/book/show/7235533-the-way-of-kings
+[gb]: https://www.goodreads.com/book/show/127455.The_Lies_of_Locke_Lamora
+[silently]: https://www.goodreads.com/book/show/12887497-silently-and-very-fast
+[elixir]: http://elixir-lang.org/
+[hubspot]: http://www.hubspot.com/
+[awesome]: http://www.awesomenauts.com/
+[dott]: http://en.wikipedia.org/wiki/Day_of_the_Tentacle
+[tog]: http://www.gog.com/game/tower_of_guns
+[ballad]: http://www.gog.com/game/the_ballads_of_reemus_when_the_bed_bites
+[unity]: http://unity3d.com/
+[deponia]: http://www.gog.com/game/deponia
