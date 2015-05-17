@@ -4,7 +4,7 @@
   <title><![CDATA[semantic art]]></title>
   <link href="http://blog.semanticart.com/blog/atom.xml" rel="self"/>
   <link href="http://blog.semanticart.com/blog/"/>
-  <updated>2015-05-17T19:02:23-04:00</updated>
+  <updated>2015-05-17T19:03:44-04:00</updated>
   <id>http://blog.semanticart.com/blog/</id>
   <author>
     <name><![CDATA[Jeffrey Chupp]]></name>
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[I18n Game Content: Multi-lingual Audiosprites And Captions Workflow]]></title>
-    <link href="http://blog.semanticart.com/blog/blog/2015/05/17/multi-lingual-audiosprites-and-captions-workflow/"/>
+    <link href="http://blog.semanticart.com/blog/blog/2015/05/17/i18n-game-content-multi-lingual-audiosprites-and-captions-workflow/"/>
     <updated>2015-05-17T18:29:00-04:00</updated>
-    <id>http://blog.semanticart.com/blog/blog/2015/05/17/multi-lingual-audiosprites-and-captions-workflow</id>
+    <id>http://blog.semanticart.com/blog/blog/2015/05/17/i18n-game-content-multi-lingual-audiosprites-and-captions-workflow</id>
     <content type="html"><![CDATA[<p><em>I&rsquo;ve started making a list in my head of things I feel strongly about in software. I18n is pretty high towards the top of that list. I wrote (and re-wrote) a post explaining why i18n is so darn important, but I couldn&rsquo;t find a comfortable balance between all-out rant and something that felt hollow. In the meantime, I&rsquo;m just going to say clearly: <strong>&ldquo;Please internationalize your software.&rdquo;</strong></em></p>
 
 <p><em>Here&rsquo;s an example of I18n in the wild.</em></p>
