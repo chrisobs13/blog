@@ -4,7 +4,7 @@
   <title><![CDATA[Category: rails | semantic art]]></title>
   <link href="http://blog.semanticart.com/blog/blog/categories/rails/atom.xml" rel="self"/>
   <link href="http://blog.semanticart.com/blog/"/>
-  <updated>2014-12-31T18:59:17-06:00</updated>
+  <updated>2015-05-17T18:58:06-04:00</updated>
   <id>http://blog.semanticart.com/blog/</id>
   <author>
     <name><![CDATA[Jeffrey Chupp]]></name>
@@ -16,7 +16,7 @@
   <entry>
     <title type="html"><![CDATA[A simple API proxy written in Go]]></title>
     <link href="http://blog.semanticart.com/blog/blog/2013/09/23/a-simple-api-proxy-written-in-go/"/>
-    <updated>2013-09-23T00:00:00-05:00</updated>
+    <updated>2013-09-23T00:00:00-04:00</updated>
     <id>http://blog.semanticart.com/blog/blog/2013/09/23/a-simple-api-proxy-written-in-go</id>
     <content type="html"><![CDATA[<h1>UPATE: see <a href="http://blog.semanticart.com/blog/2013/11/11/a-proper-api-proxy-written-in-go/">&ldquo;A proper API proxy written in Go&rdquo;</a> for a better solution to this problem.</h1>
 
@@ -167,7 +167,7 @@ Total:       1085 1730 609.4   1644    3875
   <entry>
     <title type="html"><![CDATA[Unicorn Pukes Serving Large Files]]></title>
     <link href="http://blog.semanticart.com/blog/blog/2013/08/29/unicorn-pukes-serving-large-files/"/>
-    <updated>2013-08-29T13:46:00-05:00</updated>
+    <updated>2013-08-29T13:46:00-04:00</updated>
     <id>http://blog.semanticart.com/blog/blog/2013/08/29/unicorn-pukes-serving-large-files</id>
     <content type="html"><![CDATA[<p>Earlier today I was getting this weird <a href="http://unicorn.bogomips.org/">unicorn</a> error on heroku when trying to serve a retina-sized image.</p>
 

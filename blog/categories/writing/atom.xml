@@ -4,7 +4,7 @@
   <title><![CDATA[Category: writing | semantic art]]></title>
   <link href="http://blog.semanticart.com/blog/blog/categories/writing/atom.xml" rel="self"/>
   <link href="http://blog.semanticart.com/blog/"/>
-  <updated>2014-12-31T18:59:17-06:00</updated>
+  <updated>2015-05-17T18:58:06-04:00</updated>
   <id>http://blog.semanticart.com/blog/</id>
   <author>
     <name><![CDATA[Jeffrey Chupp]]></name>
@@ -16,7 +16,7 @@
   <entry>
     <title type="html"><![CDATA[Untwisting a Hypertext Narrative - PEG to the Rescue!]]></title>
     <link href="http://blog.semanticart.com/blog/blog/2014/01/19/untwisting-a-hypertext-narrative-peg-to-the-rescue/"/>
-    <updated>2014-01-19T13:18:00-06:00</updated>
+    <updated>2014-01-19T13:18:00-05:00</updated>
     <id>http://blog.semanticart.com/blog/blog/2014/01/19/untwisting-a-hypertext-narrative-peg-to-the-rescue</id>
     <content type="html"><![CDATA[<p>In this post you&rsquo;ll learn why I think Parsing Expression Grammars are awesome and see an example of how I built one to scratch an itch.</p>
 
@@ -344,7 +344,7 @@ end
   <entry>
     <title type="html"><![CDATA[Writing Hypertext Fiction in Markdown]]></title>
     <link href="http://blog.semanticart.com/blog/blog/2014/01/11/writing-hypertext-fiction-in-markdown/"/>
-    <updated>2014-01-11T18:50:00-06:00</updated>
+    <updated>2014-01-11T18:50:00-05:00</updated>
     <id>http://blog.semanticart.com/blog/blog/2014/01/11/writing-hypertext-fiction-in-markdown</id>
     <content type="html"><![CDATA[<p>Remember <a href="https://en.wikipedia.org/wiki/Choose_Your_Own_Adventure">Choose Your Own Adventure</a> books? I fondly remember finding new ways to get myself killed as I explored Aztec ruins or fought off aliens. Death or adventure waited just a few pages away and  I was the one calling all the shots.</p>
 

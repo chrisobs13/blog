@@ -4,7 +4,7 @@
   <title><![CDATA[Category: go | semantic art]]></title>
   <link href="http://blog.semanticart.com/blog/blog/categories/go/atom.xml" rel="self"/>
   <link href="http://blog.semanticart.com/blog/"/>
-  <updated>2014-12-31T18:59:17-06:00</updated>
+  <updated>2015-05-17T18:58:06-04:00</updated>
   <id>http://blog.semanticart.com/blog/</id>
   <author>
     <name><![CDATA[Jeffrey Chupp]]></name>
@@ -16,7 +16,7 @@
   <entry>
     <title type="html"><![CDATA[A proper API proxy written in Go]]></title>
     <link href="http://blog.semanticart.com/blog/blog/2013/11/11/a-proper-api-proxy-written-in-go/"/>
-    <updated>2013-11-11T16:16:00-06:00</updated>
+    <updated>2013-11-11T16:16:00-05:00</updated>
     <id>http://blog.semanticart.com/blog/blog/2013/11/11/a-proper-api-proxy-written-in-go</id>
     <content type="html"><![CDATA[<p>A little over a month ago, I blogged about <a href="http://blog.semanticart.com/blog/2013/09/23/a-simple-api-proxy-written-in-go/">a API proxy written in Go</a>. This post contained a functioning but incredibly naive (not to mention unidiomatic) piece of Go code intended to allow proxying API requests while hiding your API keys. Here&rsquo;s an updated version that makes better use of the Go standard library and works using layers like Ruby&rsquo;s middleware (for more on this topic, <a href="http://justinas.org/writing-http-middleware-in-go/">see the excellent article here</a>). It also improves upon the original in that it will work with all HTTP verbs.</p>
 
@@ -114,7 +114,7 @@ http.ListenAndServe(":5000", cors)
   <entry>
     <title type="html"><![CDATA[A simple API proxy written in Go]]></title>
     <link href="http://blog.semanticart.com/blog/blog/2013/09/23/a-simple-api-proxy-written-in-go/"/>
-    <updated>2013-09-23T00:00:00-05:00</updated>
+    <updated>2013-09-23T00:00:00-04:00</updated>
     <id>http://blog.semanticart.com/blog/blog/2013/09/23/a-simple-api-proxy-written-in-go</id>
     <content type="html"><![CDATA[<h1>UPATE: see <a href="http://blog.semanticart.com/blog/2013/11/11/a-proper-api-proxy-written-in-go/">&ldquo;A proper API proxy written in Go&rdquo;</a> for a better solution to this problem.</h1>
 
