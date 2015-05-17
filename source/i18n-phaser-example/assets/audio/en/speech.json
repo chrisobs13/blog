@@ -1,0 +1,25 @@
+{
+  "resources": [
+    "assets/audio/en/speech.ogg",
+    "assets/audio/en/speech.m4a",
+    "assets/audio/en/speech.mp3",
+    "assets/audio/en/speech.ac3"
+  ],
+  "spritemap": {
+    "entered_room": {
+      "start": 0,
+      "end": 1.6600907029478458,
+      "loop": false
+    },
+    "found_key": {
+      "start": 3,
+      "end": 4.818798185941043,
+      "loop": false
+    },
+    "locked_door": {
+      "start": 6,
+      "end": 8.171519274376417,
+      "loop": false
+    }
+  }
+}
