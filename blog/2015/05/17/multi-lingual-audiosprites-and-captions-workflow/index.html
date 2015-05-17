@@ -1,0 +1,504 @@
+
+<!DOCTYPE HTML>
+<html>
+<head>
+	<script data-cfasync="false" type="text/javascript" src="//use.typekit.net/axj3cfp.js"></script>
+	<script data-cfasync="false" type="text/javascript">try{Typekit.load();}catch(e){}</script>
+	<meta charset="utf-8">
+	<title>I18n Game Content: Multi-lingual Audiosprites And Captions Workflow  | semantic art</title>
+
+<meta name="author" content="Jeffrey Chupp"> 
+
+<meta name="description" content="personal weblog of jeffrey chupp"> <meta name="keywords" content="">
+
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+	<link href="/atom.xml" rel="alternate" title="semantic art" type="application/atom+xml">
+	<link rel="canonical" href="">
+	<link href="/favicon.png" rel="shortcut icon">
+	<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+	<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" type="text/css" media="screen" />
+<script type="text/javascript" src="/fancybox/jquery.fancybox.pack.js"></script>
+
+<script language="Javascript" type="text/javascript">
+$(document).ready(
+  function() {
+    (function($) {
+      $(".fancybox[data-content-id]").each(function() {
+        this.href = $(this).data('content-id');
+      });
+      $(".fancybox").fancybox({
+        beforeLoad: function() {
+          var el, 
+              id = $(this.element).data('title-id');
+
+          if (id) {
+            el = $('#' + id);
+
+            if (el.length) {
+              this.title = el.html();
+            }
+          }
+          if ($(this).data('content')) {
+            this.content = $(this).data('content');
+          }
+        },
+        helpers: {
+          title: {
+            type: 'inside'
+          }
+        }
+      });
+    })(jQuery);
+  }
+);
+</script>
+	
+</head>
+
+
+<body>
+	<header id="header" class="inner"><h1><a href="/">semantic art</a></h1>
+<h4>code should say something</h4>
+<nav id="main-nav"><ul>
+	<li><a href="/">Blog</a></li>
+	<li><a href="/archives">Archive</a></li>
+</ul>
+</nav>
+<nav id="mobile-nav">
+	<div class="alignleft menu">
+		<a class="button">Menu</a>
+		<div class="container"><ul>
+	<li><a href="/">Blog</a></li>
+	<li><a href="/archives">Archive</a></li>
+</ul>
+</div>
+	</div>
+	<div class="alignright search">
+		<a class="button"></a>
+		<div class="container">
+			<form action="http://google.com/search" method="get">
+				<input type="text" name="q" results="0">
+				<input type="hidden" name="q" value="site:blog.semanticart.com/blog">
+			</form>
+		</div>
+	</div>
+</nav>
+
+
+</header>
+
+	<div id="content" class="inner"><article class="post">
+	<h2 class="title">I18n Game Content: Multi-lingual Audiosprites and Captions Workflow</h2>
+	<div class="entry-content"><p><em>I&rsquo;ve started making a list in my head of things I feel strongly about in software. I18n is pretty high towards the top of that list. I wrote (and re-wrote) a post explaining why i18n is so darn important, but I couldn&rsquo;t find a comfortable balance between all-out rant and something that felt hollow. In the meantime, I&rsquo;m just going to say clearly: <strong>&ldquo;Please internationalize your software.&rdquo;</strong></em></p>
+
+<p><em>Here&rsquo;s an example of I18n in the wild.</em></p>
+
+<h2>I was working on a game&hellip;</h2>
+
+<p>I&rsquo;ve wanted to make a video game since I was a kid sitting at my dad&rsquo;s Apple IIc thumbing through the Basic manual. I briefly toyed around with various attempts over the years but never really got very serious. Last year I finally devoted some real time into learning both Unity and Phaser. I ended up shelving game-dev for a bit, but it was fun exploring new challenges.</p>
+
+<p>While I was prototyping an adventure game in <a href="http://phaser.io/" title="Phaser - A fast, fun and free open source HTML5 game framework">Phaser</a>, I wanted to build a robust audio and text dialogue system that supported multiple language locales. I ended up finding some neat technologies and creating a comfortably streamlined workflow.</p>
+
+<p>You can <a href="/i18n-phaser-example/">check out the resulting audio engine prototype</a> read on for the process.</p>
+
+<h2>The requirements</h2>
+
+<ol>
+<li>cross-browser compatible audio</li>
+<li>captions in multiple languages</li>
+<li>audio in multiple languages</li>
+<li>easy to create and update</li>
+<li>caption display timing synchronized with audio</li>
+</ol>
+
+
+<p>(Note that the actual mechanics of dialogue bouncing between person A and person B won&rsquo;t be covered here.)</p>
+
+<h2>Cross-browser compatible audio</h2>
+
+<p>Different browsers <a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Supported_media_formats#Browser_compatibility" title="Media formats supported by the HTML audio and video elements">support different audio formats</a> out of the box. If you want cross-browser compatible audio, you really want to serve your content in multiple formats. Don&rsquo;t fret about bandwidth: clever frameworks (Phaser included) will only download the best format for the current browser.</p>
+
+<p>In Phaser, you just pass an array of audio files.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="nx">game</span><span class="p">.</span><span class="nx">load</span><span class="p">.</span><span class="nx">audio</span><span class="p">(</span><span class="s1">&#39;locked_door&#39;</span><span class="p">,</span> <span class="p">[</span>
+</span><span class='line'>    <span class="s1">&#39;assets/audio/locked_door.ac3&#39;</span><span class="p">,</span>
+</span><span class='line'>    <span class="s1">&#39;assets/audio/locked_door.ogg&#39;</span>
+</span><span class='line'><span class="p">]);</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>You want ogg for Firefox and then probably m4a and/or ac3. You might want to avoid mp3 for licensing reasons, but I&rsquo;m not a lawyer (I&rsquo;m also not an astronaut).</p>
+
+<h2>Captions in multiple languages</h2>
+
+<p>For our purposes, captions are really just text displayed on the screen. In nearly every adventure game, the character will encounter a locked door. Attempting to walk through that door should result in our character explaining why that can&rsquo;t happen yet.</p>
+
+<p>Even if we didn&rsquo;t care about internationalization, it would make sense to refer to the caption content by a key rather than hard-coding the full text strings throughout our game. Beyond just keeping our code clean, externalizing the strings will allow us to have all our content in one place for easy editing.</p>
+
+<p>Here&rsquo;s a very simple caption file in JSON format:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='json'><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="nt">&quot;found_key&quot;</span><span class="p">:</span> <span class="s2">&quot;Oh, look: a key.&quot;</span><span class="p">,</span>
+</span><span class='line'>  <span class="nt">&quot;locked_door&quot;</span><span class="p">:</span> <span class="s2">&quot;Drats! The door is locked.&quot;</span><span class="p">,</span>
+</span><span class='line'>  <span class="nt">&quot;entered_room&quot;</span><span class="p">:</span> <span class="s2">&quot;Finally, we&#39;re indoors.&quot;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>We&rsquo;ll write a function to render the caption so that we only need to pass in the key:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">function</span> <span class="nx">say</span><span class="p">(</span><span class="nx">translationKey</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>  <span class="c1">// get the text from our captions json</span>
+</span><span class='line'>  <span class="kd">var</span> <span class="nx">textToRender</span> <span class="o">=</span> <span class="nx">game</span><span class="p">.</span><span class="nx">cache</span><span class="p">.</span><span class="nx">getJSON</span><span class="p">(</span><span class="s1">&#39;speechCaptions&#39;</span><span class="p">)[</span><span class="nx">translationKey</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="c1">// draw our caption</span>
+</span><span class='line'>  <span class="nx">game</span><span class="p">.</span><span class="nx">add</span><span class="p">.</span><span class="nx">text</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="nx">textToRender</span><span class="p">,</span> <span class="nx">captionStyle</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="nx">say</span><span class="p">(</span><span class="s2">&quot;locked_door&quot;</span><span class="p">);</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>And it renders something like this:</p>
+
+<p><img src="/images/locked_door.jpg" alt="locked door caption" /></p>
+
+<p>Localizing our captions is pretty straightforward. For each language we want to support, we copy an existing translation file and replace the JSON values (not the keys) with translated versions.</p>
+
+<p>We&rsquo;d do well to leverage convention over configuration. Keep all captions for a locale in a folder with the locale name.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="err">/assets/audio/en/captions.json</span>
+</span><span class='line'><span class="o">/</span><span class="nx">assets</span><span class="o">/</span><span class="nx">audio</span><span class="o">/</span><span class="nx">de</span><span class="o">/</span><span class="nx">captions</span><span class="p">.</span><span class="nx">json</span>
+</span><span class='line'><span class="p">...</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Changing locales should change the locale folder being used. Your game is always loading &ldquo;captions.json&rdquo; and it just decides which copy to load based on the player&rsquo;s locale.</p>
+
+<h2>Audio in multiple languages</h2>
+
+<p>This part doesn&rsquo;t need to be overly clever. Record the same content in various formats for each language.</p>
+
+<p>Consider the caption JSON from the previous section. It might make sense to have one JSON file per character. With some direction, a voice actor could read each line and you could save the line with a filename matching the key (e.g. the audio &ldquo;Drats! The door is locked.&rdquo; is saved as locked_door.wav).</p>
+
+<p>We&rsquo;ll store the encoded versions in locale-specific folders as we did with our captions.json</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="err">/assets/audio/en/locked_door.ac3</span>
+</span><span class='line'><span class="o">/</span><span class="nx">assets</span><span class="o">/</span><span class="nx">audio</span><span class="o">/</span><span class="nx">en</span><span class="o">/</span><span class="nx">locked_door</span><span class="p">.</span><span class="nx">ogg</span>
+</span><span class='line'><span class="o">/</span><span class="nx">assets</span><span class="o">/</span><span class="nx">audio</span><span class="o">/</span><span class="nx">de</span><span class="o">/</span><span class="nx">locked_door</span><span class="p">.</span><span class="nx">ac3</span>
+</span><span class='line'><span class="o">/</span><span class="nx">assets</span><span class="o">/</span><span class="nx">audio</span><span class="o">/</span><span class="nx">de</span><span class="o">/</span><span class="nx">locked_door</span><span class="p">.</span><span class="nx">ogg</span>
+</span><span class='line'><span class="p">...</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>And then we can update our <code>say</code> function to also play the corresponding bit of audio.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">function</span> <span class="nx">say</span><span class="p">(</span><span class="nx">translationKey</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>  <span class="c1">// get the text from our captions json</span>
+</span><span class='line'>  <span class="kd">var</span> <span class="nx">textToRender</span> <span class="o">=</span> <span class="nx">game</span><span class="p">.</span><span class="nx">cache</span><span class="p">.</span><span class="nx">getJSON</span><span class="p">(</span><span class="s1">&#39;speechCaptions&#39;</span><span class="p">)[</span><span class="nx">translationKey</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="c1">// draw our caption</span>
+</span><span class='line'>  <span class="nx">game</span><span class="p">.</span><span class="nx">add</span><span class="p">.</span><span class="nx">text</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="nx">textToRender</span><span class="p">,</span> <span class="nx">captionStyle</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="c1">// speak our line</span>
+</span><span class='line'>  <span class="nx">game</span><span class="p">.</span><span class="nx">speech</span><span class="p">.</span><span class="nx">play</span><span class="p">(</span><span class="nx">translationKey</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="nx">say</span><span class="p">(</span><span class="s2">&quot;locked_door&quot;</span><span class="p">);</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>Easy to create and update</h2>
+
+<p>Have you ever played a game or watched a movie where the captions didn&rsquo;t accurately reflect what was being said? This drives me crazy.</p>
+
+<p>I&rsquo;m guessing that the reason that audio and caption text fall out of sync is probably late content changes or the result of actors ad-libbing. Fortunately we&rsquo;ve got a system that is friendly to rewrites from either side. Prefer the ad-lib? Update the caption file. Change the caption? Re-record the corresponding line.</p>
+
+<p>The content workflow here is straightforward. To reiterate:</p>
+
+<ul>
+<li>Create a script as json with keys and text. Edit this until you&rsquo;re happy. Tweak it as the game content progresses.</li>
+<li>Translate that file into as many locales as you care about.</li>
+<li>Losslessly record each line for each locale and save the line under the file name of the key.</li>
+<li>Tweak captions and re-record as necessary.</li>
+</ul>
+
+
+<p>That&rsquo;s all well and good, but now you&rsquo;ve got a ton of raw audio files you&rsquo;ll need to encode over and over again. And having a user download hundreds of small audio files is hardly efficient.</p>
+
+<p>We can do better. Enter the Audio Sprite. You may already be familiar with its visual counterpart <a href="http://en.wikipedia.org/wiki/Sprite_%28computer_graphics%29" title="Wikipedia: Sprite (computer graphics)">the sprite sheet</a>, which combines multiple images into a single image. An audio sprite combines multiple bits of audio into one file and has additional data to mark when each clip starts and ends.</p>
+
+<p>Using the <a href="https://github.com/tonistiigi/audiosprite" title="Github: audiosprite - Jukebox/Howler/CreateJS compatible audio sprite generator">audiosprite</a> library, we can store all of our raw audio assets in a per-locale folder and run:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="err">➜</span>  <span class="nx">audiosprite</span> <span class="nx">raw</span><span class="o">-</span><span class="nx">audio</span><span class="o">/</span><span class="nx">en</span><span class="o">/*</span><span class="p">.</span><span class="nx">wav</span> <span class="o">-</span><span class="nx">o</span> <span class="nx">assets</span><span class="o">/</span><span class="nx">audio</span><span class="o">/</span><span class="nx">en</span><span class="o">/</span><span class="nx">speech</span>
+</span><span class='line'><span class="nx">info</span><span class="o">:</span> <span class="nx">File</span> <span class="nx">added</span> <span class="nx">OK</span> <span class="nx">file</span><span class="o">=</span><span class="err">/var/folders/yw/9wvsjry92ggb9959g805_yfsvj7lg6/T/audiosprite.16278579225763679, duration=1.6600907029478458</span>
+</span><span class='line'><span class="nx">info</span><span class="o">:</span> <span class="nx">Silence</span> <span class="nx">gap</span> <span class="nx">added</span> <span class="nx">duration</span><span class="o">=</span><span class="mf">1.3399092970521542</span>
+</span><span class='line'><span class="nx">info</span><span class="o">:</span> <span class="nx">File</span> <span class="nx">added</span> <span class="nx">OK</span> <span class="nx">file</span><span class="o">=</span><span class="err">/var/folders/yw/9wvsjry92ggb9959g805_yfsvj7lg6/T/audiosprite.6657312458846718, duration=1.8187981859410431</span>
+</span><span class='line'><span class="nx">info</span><span class="o">:</span> <span class="nx">Silence</span> <span class="nx">gap</span> <span class="nx">added</span> <span class="nx">duration</span><span class="o">=</span><span class="mf">1.1812018140589569</span>
+</span><span class='line'><span class="nx">info</span><span class="o">:</span> <span class="nx">File</span> <span class="nx">added</span> <span class="nx">OK</span> <span class="nx">file</span><span class="o">=</span><span class="err">/var/folders/yw/9wvsjry92ggb9959g805_yfsvj7lg6/T/audiosprite.3512551293242723, duration=2.171519274376417</span>
+</span><span class='line'><span class="nx">info</span><span class="o">:</span> <span class="nx">Silence</span> <span class="nx">gap</span> <span class="nx">added</span> <span class="nx">duration</span><span class="o">=</span><span class="mf">1.8284807256235829</span>
+</span><span class='line'><span class="nx">info</span><span class="o">:</span> <span class="nx">Exported</span> <span class="nx">ogg</span> <span class="nx">OK</span> <span class="nx">file</span><span class="o">=</span><span class="nx">assets</span><span class="o">/</span><span class="nx">audio</span><span class="o">/</span><span class="nx">en</span><span class="o">/</span><span class="nx">speech</span><span class="p">.</span><span class="nx">ogg</span>
+</span><span class='line'><span class="nx">info</span><span class="o">:</span> <span class="nx">Exported</span> <span class="nx">m4a</span> <span class="nx">OK</span> <span class="nx">file</span><span class="o">=</span><span class="nx">assets</span><span class="o">/</span><span class="nx">audio</span><span class="o">/</span><span class="nx">en</span><span class="o">/</span><span class="nx">speech</span><span class="p">.</span><span class="nx">m4a</span>
+</span><span class='line'><span class="nx">info</span><span class="o">:</span> <span class="nx">Exported</span> <span class="nx">mp3</span> <span class="nx">OK</span> <span class="nx">file</span><span class="o">=</span><span class="nx">assets</span><span class="o">/</span><span class="nx">audio</span><span class="o">/</span><span class="nx">en</span><span class="o">/</span><span class="nx">speech</span><span class="p">.</span><span class="nx">mp3</span>
+</span><span class='line'><span class="nx">info</span><span class="o">:</span> <span class="nx">Exported</span> <span class="nx">ac3</span> <span class="nx">OK</span> <span class="nx">file</span><span class="o">=</span><span class="nx">assets</span><span class="o">/</span><span class="nx">audio</span><span class="o">/</span><span class="nx">en</span><span class="o">/</span><span class="nx">speech</span><span class="p">.</span><span class="nx">ac3</span>
+</span><span class='line'><span class="nx">info</span><span class="o">:</span> <span class="nx">Exported</span> <span class="nx">json</span> <span class="nx">OK</span> <span class="nx">file</span><span class="o">=</span><span class="nx">assets</span><span class="o">/</span><span class="nx">audio</span><span class="o">/</span><span class="nx">en</span><span class="o">/</span><span class="nx">speech</span><span class="p">.</span><span class="nx">json</span>
+</span><span class='line'><span class="nx">info</span><span class="o">:</span> <span class="nx">All</span> <span class="nx">done</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Awesome. This generated a single file that joins together all of our content and did so in multiple formats. If we peek in the generated JSON file we see</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+</pre></td><td class='code'><pre><code class='json'><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="nt">&quot;resources&quot;</span><span class="p">:</span> <span class="p">[</span>
+</span><span class='line'>    <span class="s2">&quot;assets/audio/en/speech.ogg&quot;</span><span class="p">,</span>
+</span><span class='line'>    <span class="s2">&quot;assets/audio/en/speech.m4a&quot;</span><span class="p">,</span>
+</span><span class='line'>    <span class="s2">&quot;assets/audio/en/speech.mp3&quot;</span><span class="p">,</span>
+</span><span class='line'>    <span class="s2">&quot;assets/audio/en/speech.ac3&quot;</span>
+</span><span class='line'>  <span class="p">],</span>
+</span><span class='line'>  <span class="nt">&quot;spritemap&quot;</span><span class="p">:</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nt">&quot;entered_room&quot;</span><span class="p">:</span> <span class="p">{</span>
+</span><span class='line'>      <span class="nt">&quot;start&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+</span><span class='line'>      <span class="nt">&quot;end&quot;</span><span class="p">:</span> <span class="mf">1.6600907029478458</span><span class="p">,</span>
+</span><span class='line'>      <span class="nt">&quot;loop&quot;</span><span class="p">:</span> <span class="kc">false</span>
+</span><span class='line'>    <span class="p">},</span>
+</span><span class='line'>    <span class="nt">&quot;found_key&quot;</span><span class="p">:</span> <span class="p">{</span>
+</span><span class='line'>      <span class="nt">&quot;start&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
+</span><span class='line'>      <span class="nt">&quot;end&quot;</span><span class="p">:</span> <span class="mf">4.818798185941043</span><span class="p">,</span>
+</span><span class='line'>      <span class="nt">&quot;loop&quot;</span><span class="p">:</span> <span class="kc">false</span>
+</span><span class='line'>    <span class="p">},</span>
+</span><span class='line'>    <span class="nt">&quot;locked_door&quot;</span><span class="p">:</span> <span class="p">{</span>
+</span><span class='line'>      <span class="nt">&quot;start&quot;</span><span class="p">:</span> <span class="mi">6</span><span class="p">,</span>
+</span><span class='line'>      <span class="nt">&quot;end&quot;</span><span class="p">:</span> <span class="mf">8.171519274376417</span><span class="p">,</span>
+</span><span class='line'>      <span class="nt">&quot;loop&quot;</span><span class="p">:</span> <span class="kc">false</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Phaser <a href="http://phaser.io/docs/2.2.3/Phaser.AudioSprite.html">supports audiosprites</a> quite well. We tweak our engine a bit to use sprites instead of individual files and we&rsquo;re good to go.</p>
+
+<h2>Caption display timing synchronized with audio</h2>
+
+<p>Now we turn to keeping the captions we&rsquo;re displaying in sync with the audio being played. We have all the timing data we need in our audiosprite JSON.</p>
+
+<p>We&rsquo;ll update our <code>say</code> function to clean up the dialog text after the audio has ended:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">function</span> <span class="nx">say</span><span class="p">(</span><span class="nx">translationKey</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>  <span class="c1">// get the text from our captions json</span>
+</span><span class='line'>  <span class="kd">var</span> <span class="nx">textToRender</span> <span class="o">=</span> <span class="nx">game</span><span class="p">.</span><span class="nx">cache</span><span class="p">.</span><span class="nx">getJSON</span><span class="p">(</span><span class="s1">&#39;speechCaptions&#39;</span><span class="p">)[</span><span class="nx">translationKey</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="c1">// draw our caption</span>
+</span><span class='line'>  <span class="kd">var</span> <span class="nx">caption</span> <span class="o">=</span> <span class="nx">game</span><span class="p">.</span><span class="nx">add</span><span class="p">.</span><span class="nx">text</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="nx">textToRender</span><span class="p">,</span> <span class="nx">captionStyle</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="c1">// speak our line</span>
+</span><span class='line'>  <span class="kd">var</span> <span class="nx">audio</span> <span class="o">=</span> <span class="nx">game</span><span class="p">.</span><span class="nx">speech</span><span class="p">.</span><span class="nx">play</span><span class="p">(</span><span class="nx">translationKey</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="c1">// set a timeout to remove the caption when the audio finishes</span>
+</span><span class='line'>  <span class="nx">setTimeout</span><span class="p">(</span><span class="kd">function</span><span class="p">(){</span>
+</span><span class='line'>    <span class="nx">caption</span><span class="p">.</span><span class="nx">destroy</span><span class="p">();</span>
+</span><span class='line'>  <span class="p">},</span> <span class="nx">audio</span><span class="p">.</span><span class="nx">durationMS</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="nx">say</span><span class="p">(</span><span class="s2">&quot;locked_door&quot;</span><span class="p">);</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Aside: Not everyone reads at the same speed. You&rsquo;ll probably want to consider having some sort of slider that acts as a multiplier for the caption duration. Readers who prefer to read more slowly can happily use 1.5X or 2X caption duration. You might not want to have the slider go less than 1X lest the captions disappear while the speech audio is still ongoing, but perhaps some portion of your audience will turn off audio in favor of reading quickly. The duration of the audio still makes sense to me as a starting point for caption duration.</p>
+
+<h2>The prototype code</h2>
+
+<p>The <a href="https://github.com/semanticart/i18n-phaser-audiosprite-example">prototype code</a> covers all you need to get rolling with Phaser and Audiosprites. It also has basic support for preventing people talking over each other. Hopefully you&rsquo;ll find it instructive or at least interesting.</p>
+
+<p>Perhaps one day I&rsquo;ll have a proper game prototype to share.</p>
+
+<p>That concludes this random example of I18n in the wild. Stay global, folks.</p>
+</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2015-05-17T18:29:00-04:00" pubdate data-updated="true">May 17<span>th</span>, 2015</time></div>
+	
+
+
+	
+</div></article>
+
+	<div class="share">
+	<div class="addthis_toolbox addthis_default_style ">
+	
+	
+	<a class="addthis_button_tweet"></a>
+	
+	
+<!---	<a class="addthis_counter addthis_pill_style"></a> --->
+	</div>
+  <script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#pubid="></script>
+</div>
+
+
+
+<section id="comment">
+    <h2 class="title">Comments</h2>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+</section>
+</div>
+	<footer id="footer" class="inner">Copyright &copy; 2015
+
+    Jeffrey Chupp
+
+<br>
+Powered by Octopress.
+</footer>
+	<script src="/javascripts/slash.js"></script>
+<script src="/javascripts/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+	$('.fancybox').fancybox();
+})(jQuery);
+</script> <!-- Delete or comment this line to disable Fancybox -->
+
+
+<script type="text/javascript">
+      var disqus_shortname = 'semanticart';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://blog.semanticart.com/blog/blog/2015/05/17/multi-lingual-audiosprites-and-captions-workflow/';
+        var disqus_url = 'http://blog.semanticart.com/blog/blog/2015/05/17/multi-lingual-audiosprites-and-captions-workflow/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+	<script type="text/javascript">
+		var _gaq = _gaq || [];
+		_gaq.push(['_setAccount', 'UA-35446138-1']);
+		_gaq.push(['_trackPageview']);
+
+		(function() {
+			var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+			ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+			var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+		})();
+	</script>
+
+
+
+</body>
+</html>
