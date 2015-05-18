@@ -1,0 +1,259 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: javascript | semantic art]]></title>
+  <link href="http://blog.semanticart.com/blog/blog/categories/javascript/atom.xml" rel="self"/>
+  <link href="http://blog.semanticart.com/blog/"/>
+  <updated>2015-05-18T08:35:51-04:00</updated>
+  <id>http://blog.semanticart.com/blog/</id>
+  <author>
+    <name><![CDATA[Jeffrey Chupp]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[I18n Game Content: Multilingual Audiosprites And Captions Workflow]]></title>
+    <link href="http://blog.semanticart.com/blog/blog/2015/05/17/i18n-game-content-multilingual-audiosprites-and-captions-workflow/"/>
+    <updated>2015-05-17T18:29:00-04:00</updated>
+    <id>http://blog.semanticart.com/blog/blog/2015/05/17/i18n-game-content-multilingual-audiosprites-and-captions-workflow</id>
+    <content type="html"><![CDATA[<p><em>I&rsquo;ve started making a list in my head of things I feel strongly about in software. I18n is pretty high towards the top of that list. I wrote (and re-wrote) a post explaining why i18n is so darn important, but I couldn&rsquo;t find a comfortable balance between all-out rant and something that felt hollow. In the meantime, I&rsquo;m just going to say clearly: <strong>&ldquo;Please internationalize your software.&rdquo;</strong></em></p>
+
+<p><em>Here&rsquo;s an example of I18n in the wild.</em></p>
+
+<h2>I was working on a game&hellip;</h2>
+
+<p>I&rsquo;ve wanted to make a video game since I was a kid sitting at my dad&rsquo;s Apple IIc thumbing through the Basic manual. I briefly toyed around with various attempts over the years but never really got very serious. Last year I finally devoted some real time into learning both Unity and Phaser. I ended up shelving game-dev for a bit, but it was fun exploring new challenges.</p>
+
+<p>While I was prototyping an adventure game in <a href="http://phaser.io/" title="Phaser - A fast, fun and free open source HTML5 game framework">Phaser</a>, I wanted to build a robust audio and text dialogue system that supported multiple language locales. I ended up finding some neat technologies and creating a comfortably streamlined workflow.</p>
+
+<p>You can <a href="/i18n-phaser-example/">check out the resulting audio engine prototype</a> read on for the process.</p>
+
+<h2>The requirements</h2>
+
+<ol>
+<li>cross-browser compatible audio</li>
+<li>captions in multiple languages</li>
+<li>audio in multiple languages</li>
+<li>easy to create and update</li>
+<li>caption display timing synchronized with audio</li>
+</ol>
+
+
+<p>(Note that the actual mechanics of dialogue bouncing between person A and person B won&rsquo;t be covered here.)</p>
+
+<h2>Cross-browser compatible audio</h2>
+
+<p>Different browsers <a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Supported_media_formats#Browser_compatibility" title="Media formats supported by the HTML audio and video elements">support different audio formats</a> out of the box. If you want cross-browser compatible audio, you really want to serve your content in multiple formats. Don&rsquo;t fret about bandwidth: clever frameworks (Phaser included) will only download the best format for the current browser.</p>
+
+<p>In Phaser, you just pass an array of audio files.</p>
+
+<p>```javascript
+game.load.audio(&lsquo;locked_door&rsquo;, [</p>
+
+<pre><code>'assets/audio/locked_door.ac3',
+'assets/audio/locked_door.ogg'
+</code></pre>
+
+<p>]);
+```</p>
+
+<p>You want ogg for Firefox and then probably m4a and/or ac3. You might want to avoid mp3 for licensing reasons, but I&rsquo;m not a lawyer (I&rsquo;m also not an astronaut).</p>
+
+<h2>Captions in multiple languages</h2>
+
+<p>For our purposes, captions are really just text displayed on the screen. In nearly every adventure game, the character will encounter a locked door. Attempting to walk through that door should result in our character explaining why that can&rsquo;t happen yet.</p>
+
+<p>Even if we didn&rsquo;t care about internationalization, it would make sense to refer to the caption content by a key rather than hard-coding the full text strings throughout our game. Beyond just keeping our code clean, externalizing the strings will allow us to have all our content in one place for easy editing.</p>
+
+<p>Here&rsquo;s a very simple caption file in JSON format:</p>
+
+<p><code>json
+{
+  "found_key": "Oh, look: a key.",
+  "locked_door": "Drats! The door is locked.",
+  "entered_room": "Finally, we're indoors."
+}
+</code></p>
+
+<p>We&rsquo;ll write a function to render the caption so that we only need to pass in the key:</p>
+
+<p>``` javascript</p>
+
+<p>function say(translationKey) {
+  // get the text from our captions json
+  var textToRender = game.cache.getJSON(&lsquo;speechCaptions&rsquo;)[translationKey];</p>
+
+<p>  // draw our caption
+  game.add.text(0, 20, textToRender, captionStyle);
+}</p>
+
+<p>say(&ldquo;locked_door&rdquo;);
+```</p>
+
+<p>And it renders something like this:</p>
+
+<p><img src="/images/locked_door.jpg" alt="locked door caption" /></p>
+
+<p>Localizing our captions is pretty straightforward. For each language we want to support, we copy an existing translation file and replace the JSON values (not the keys) with translated versions.</p>
+
+<p>We&rsquo;d do well to leverage convention over configuration. Keep all captions for a locale in a folder with the locale name.</p>
+
+<p><code>
+/assets/audio/en/captions.json
+/assets/audio/de/captions.json
+...
+</code></p>
+
+<p>Changing locales should change the locale folder being used. Your game is always loading &ldquo;captions.json&rdquo; and it just decides which copy to load based on the player&rsquo;s locale.</p>
+
+<h2>Audio in multiple languages</h2>
+
+<p>This part doesn&rsquo;t need to be overly clever. Record the same content in various formats for each language.</p>
+
+<p>Consider the caption JSON from the previous section. It might make sense to have one JSON file per character. With some direction, a voice actor could read each line and you could save the line with a filename matching the key (e.g. the audio &ldquo;Drats! The door is locked.&rdquo; is saved as locked_door.wav).</p>
+
+<p>We&rsquo;ll store the encoded versions in locale-specific folders as we did with our captions.json</p>
+
+<p><code>
+/assets/audio/en/locked_door.ac3
+/assets/audio/en/locked_door.ogg
+/assets/audio/de/locked_door.ac3
+/assets/audio/de/locked_door.ogg
+...
+</code></p>
+
+<p>And then we can update our <code>say</code> function to also play the corresponding bit of audio.</p>
+
+<p>``` javascript
+function say(translationKey) {
+  // get the text from our captions json
+  var textToRender = game.cache.getJSON(&lsquo;speechCaptions&rsquo;)[translationKey];</p>
+
+<p>  // draw our caption
+  game.add.text(0, 20, textToRender, captionStyle);</p>
+
+<p>  // speak our line
+  game.speech.play(translationKey);
+}</p>
+
+<p>say(&ldquo;locked_door&rdquo;);
+```</p>
+
+<h2>Easy to create and update</h2>
+
+<p>Have you ever played a game or watched a movie where the captions didn&rsquo;t accurately reflect what was being said? This drives me crazy.</p>
+
+<p>I&rsquo;m guessing that the reason that audio and caption text fall out of sync is probably late content changes or the result of actors ad-libbing. Fortunately we&rsquo;ve got a system that is friendly to rewrites from either side. Prefer the ad-lib? Update the caption file. Change the caption? Re-record the corresponding line.</p>
+
+<p>The content workflow here is straightforward. To reiterate:</p>
+
+<ul>
+<li>Create a script as json with keys and text. Edit this until you&rsquo;re happy. Tweak it as the game content progresses.</li>
+<li>Translate that file into as many locales as you care about.</li>
+<li>Losslessly record each line for each locale and save the line under the file name of the key.</li>
+<li>Tweak captions and re-record as necessary.</li>
+</ul>
+
+
+<p>That&rsquo;s all well and good, but now you&rsquo;ve got a ton of raw audio files you&rsquo;ll need to encode over and over again. And having a user download hundreds of small audio files is hardly efficient.</p>
+
+<p>We can do better. Enter the Audio Sprite. You may already be familiar with its visual counterpart <a href="http://en.wikipedia.org/wiki/Sprite_%28computer_graphics%29" title="Wikipedia: Sprite (computer graphics)">the sprite sheet</a>, which combines multiple images into a single image. An audio sprite combines multiple bits of audio into one file and has additional data to mark when each clip starts and ends.</p>
+
+<p>Using the <a href="https://github.com/tonistiigi/audiosprite" title="Github: audiosprite - Jukebox/Howler/CreateJS compatible audio sprite generator">audiosprite</a> library, we can store all of our raw audio assets in a per-locale folder and run:</p>
+
+<p><code>
+➜  audiosprite raw-audio/en/*.wav -o assets/audio/en/speech
+info: File added OK file=/var/folders/yw/9wvsjry92ggb9959g805_yfsvj7lg6/T/audiosprite.16278579225763679, duration=1.6600907029478458
+info: Silence gap added duration=1.3399092970521542
+info: File added OK file=/var/folders/yw/9wvsjry92ggb9959g805_yfsvj7lg6/T/audiosprite.6657312458846718, duration=1.8187981859410431
+info: Silence gap added duration=1.1812018140589569
+info: File added OK file=/var/folders/yw/9wvsjry92ggb9959g805_yfsvj7lg6/T/audiosprite.3512551293242723, duration=2.171519274376417
+info: Silence gap added duration=1.8284807256235829
+info: Exported ogg OK file=assets/audio/en/speech.ogg
+info: Exported m4a OK file=assets/audio/en/speech.m4a
+info: Exported mp3 OK file=assets/audio/en/speech.mp3
+info: Exported ac3 OK file=assets/audio/en/speech.ac3
+info: Exported json OK file=assets/audio/en/speech.json
+info: All done
+</code></p>
+
+<p>Awesome. This generated a single file that joins together all of our content and did so in multiple formats. If we peek in the generated JSON file we see</p>
+
+<p>```json
+{
+  &ldquo;resources&rdquo;: [</p>
+
+<pre><code>"assets/audio/en/speech.ogg",
+"assets/audio/en/speech.m4a",
+"assets/audio/en/speech.mp3",
+"assets/audio/en/speech.ac3"
+</code></pre>
+
+<p>  ],
+  &ldquo;spritemap&rdquo;: {</p>
+
+<pre><code>"entered_room": {
+  "start": 0,
+  "end": 1.6600907029478458,
+  "loop": false
+},
+"found_key": {
+  "start": 3,
+  "end": 4.818798185941043,
+  "loop": false
+},
+"locked_door": {
+  "start": 6,
+  "end": 8.171519274376417,
+  "loop": false
+}
+</code></pre>
+
+<p>  }
+}
+```</p>
+
+<p>Phaser <a href="http://phaser.io/docs/2.2.3/Phaser.AudioSprite.html">supports audiosprites</a> quite well. We tweak our engine a bit to use sprites instead of individual files and we&rsquo;re good to go.</p>
+
+<h2>Caption display timing synchronized with audio</h2>
+
+<p>Now we turn to keeping the captions we&rsquo;re displaying in sync with the audio being played. We have all the timing data we need in our audiosprite JSON.</p>
+
+<p>We&rsquo;ll update our <code>say</code> function to clean up the dialog text after the audio has ended:</p>
+
+<p>``` javascript
+function say(translationKey) {
+  // get the text from our captions json
+  var textToRender = game.cache.getJSON(&lsquo;speechCaptions&rsquo;)[translationKey];</p>
+
+<p>  // draw our caption
+  var caption = game.add.text(0, 20, textToRender, captionStyle);</p>
+
+<p>  // speak our line
+  var audio = game.speech.play(translationKey);</p>
+
+<p>  // set a timeout to remove the caption when the audio finishes
+  setTimeout(function(){</p>
+
+<pre><code>caption.destroy();
+</code></pre>
+
+<p>  }, audio.durationMS);
+}</p>
+
+<p>say(&ldquo;locked_door&rdquo;);
+```</p>
+
+<p>Aside: Not everyone reads at the same speed. You&rsquo;ll probably want to consider having some sort of slider that acts as a multiplier for the caption duration. Readers who prefer to read more slowly can happily use 1.5X or 2X caption duration. You might not want to have the slider go less than 1X lest the captions disappear while the speech audio is still ongoing, but perhaps some portion of your audience will turn off audio in favor of reading quickly. The duration of the audio still makes sense to me as a starting point for caption duration.</p>
+
+<h2>The prototype code</h2>
+
+<p>The <a href="https://github.com/semanticart/i18n-phaser-audiosprite-example">prototype code</a> covers all you need to get rolling with Phaser and Audiosprites. It also has basic support for preventing people talking over each other. Hopefully you&rsquo;ll find it instructive or at least interesting.</p>
+
+<p>That concludes this random example of I18n in the wild. Stay global, folks.</p>
+]]></content>
+  </entry>
+  
+</feed>
