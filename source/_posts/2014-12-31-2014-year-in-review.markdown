@@ -58,7 +58,7 @@ Nothing is more important than family. Next year I'll be asking myself how I can
 
 For this year's wild attempt at financial freedom I spent a lot of time trying to learn game development. [Unity][unity] is interesting but scaling 2d assets are still a giant pain and I realized I don't have the talent or free-time to be a one-man game studio. Go figure, right? Maybe if I quit my job and doubled-down on it... but that's just not realistic or what I want right now.
 
-For next year's wild attempt, I'd really like to get some sort of SASS going as a side-project. If I've learned anything working at HubSpot, it is how the economics of SASS are compelling and how having customers giving you money every month is both freeing and empowering. Even if this attempt fails dramatically, there's plenty to learn here.
+For next year's wild attempt, I'd really like to get some sort of SaaS going as a side-project. If I've learned anything working at HubSpot, it is how the economics of Saas are compelling and how having customers giving you money every month is both freeing and empowering. Even if this attempt fails dramatically, there's plenty to learn here.
 
 ## Onward
 
